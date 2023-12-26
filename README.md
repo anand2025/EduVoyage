@@ -23,5 +23,3 @@ This is a web application built using the MERN stack (MongoDB, Express.js, React
 ![Screenshot 2023-12-26 235630](https://github.com/anand2025/EduVoyage/assets/105790879/0d869555-b579-450b-89d0-1abc78379cd0)<br />
 ![Screenshot 2023-12-26 235711](https://github.com/anand2025/EduVoyage/assets/105790879/15aa913f-ff48-4909-88a2-6219f1e5176b)<br />
 ![Screenshot 2023-12-26 235740](https://github.com/anand2025/EduVoyage/assets/105790879/b659ade7-d17d-4538-84b8-f61d38e83edd)<br />
-![Screenshot 2023-12-26 235630](https://github.com/anand2025/EduVoyage/assets/105790879/dac5102c-362f-4961-beb6-6e4d7afe0a5a)<br />
-![Screenshot 2023-12-26 235410](https://github.com/anand2025/EduVoyage/assets/105790879/8aa5dcbc-963a-4cda-8ed0-8d6e04bab9d1)<br />
