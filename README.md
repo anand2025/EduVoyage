@@ -14,13 +14,13 @@ This is a web application built using the MERN stack (MongoDB, Express.js, React
 5.VS Code-Development<br />
 6.Vercel and Github-Deployment<br />
 ## Demo of the website
-![Screenshot 2023-12-26 235410](https://github.com/anand2025/EduVoyage/assets/105790879/a4e42b89-2267-400c-989d-5da0c6ba02fa)
-![Screenshot 2023-12-26 235437](https://github.com/anand2025/EduVoyage/assets/105790879/6e91ee6e-7299-4a59-bc8f-ea4d6a9f919e)
-![Screenshot 2023-12-26 235511](https://github.com/anand2025/EduVoyage/assets/105790879/5946a26a-f860-4b82-ac99-1ca46a8b9443)
-![Screenshot 2023-12-26 235543](https://github.com/anand2025/EduVoyage/assets/105790879/e381b540-a65d-42aa-9540-3b742f579b94)
-![Screenshot 2023-12-26 235608](https://github.com/anand2025/EduVoyage/assets/105790879/45a973a2-0a63-4a5e-b755-86ac232a3c2a)
-![Screenshot 2023-12-26 235630](https://github.com/anand2025/EduVoyage/assets/105790879/0d869555-b579-450b-89d0-1abc78379cd0)
-![Screenshot 2023-12-26 235711](https://github.com/anand2025/EduVoyage/assets/105790879/15aa913f-ff48-4909-88a2-6219f1e5176b)
-![Screenshot 2023-12-26 235740](https://github.com/anand2025/EduVoyage/assets/105790879/b659ade7-d17d-4538-84b8-f61d38e83edd)
-![Screenshot 2023-12-26 235630](https://github.com/anand2025/EduVoyage/assets/105790879/dac5102c-362f-4961-beb6-6e4d7afe0a5a)
-![Screenshot 2023-12-26 235410](https://github.com/anand2025/EduVoyage/assets/105790879/8aa5dcbc-963a-4cda-8ed0-8d6e04bab9d1)
+![Screenshot 2023-12-26 235410](https://github.com/anand2025/EduVoyage/assets/105790879/a4e42b89-2267-400c-989d-5da0c6ba02fa)<br />
+![Screenshot 2023-12-26 235437](https://github.com/anand2025/EduVoyage/assets/105790879/6e91ee6e-7299-4a59-bc8f-ea4d6a9f919e)<br />
+![Screenshot 2023-12-26 235511](https://github.com/anand2025/EduVoyage/assets/105790879/5946a26a-f860-4b82-ac99-1ca46a8b9443)<br />
+![Screenshot 2023-12-26 235543](https://github.com/anand2025/EduVoyage/assets/105790879/e381b540-a65d-42aa-9540-3b742f579b94)<br />
+![Screenshot 2023-12-26 235608](https://github.com/anand2025/EduVoyage/assets/105790879/45a973a2-0a63-4a5e-b755-86ac232a3c2a)<br />
+![Screenshot 2023-12-26 235630](https://github.com/anand2025/EduVoyage/assets/105790879/0d869555-b579-450b-89d0-1abc78379cd0)<br />
+![Screenshot 2023-12-26 235711](https://github.com/anand2025/EduVoyage/assets/105790879/15aa913f-ff48-4909-88a2-6219f1e5176b)<br />
+![Screenshot 2023-12-26 235740](https://github.com/anand2025/EduVoyage/assets/105790879/b659ade7-d17d-4538-84b8-f61d38e83edd)<br />
+![Screenshot 2023-12-26 235630](https://github.com/anand2025/EduVoyage/assets/105790879/dac5102c-362f-4961-beb6-6e4d7afe0a5a)<br />
+![Screenshot 2023-12-26 235410](https://github.com/anand2025/EduVoyage/assets/105790879/8aa5dcbc-963a-4cda-8ed0-8d6e04bab9d1)<br />
