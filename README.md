@@ -13,7 +13,9 @@ This is a web application built using the MERN stack (MongoDB, Express.js, React
 3.Mongo DB-Database<br />
 4.JSON Web Tokens (JWT)-Authentication and Authorisation<br />
 5.VS Code-Development<br />
-6.Vercel and Github-Deployment<br />
+6.Render, Netlify and Github-Deployment<br />
+Backend: https://github.com/anand2025/edu
+Frontend: https://github.com/anand2025/edufrontend
 ## Demo of the website
 ![Screenshot 2023-12-26 235410](https://github.com/anand2025/EduVoyage/assets/105790879/a4e42b89-2267-400c-989d-5da0c6ba02fa)<br />
 ![Screenshot 2023-12-26 235437](https://github.com/anand2025/EduVoyage/assets/105790879/6e91ee6e-7299-4a59-bc8f-ea4d6a9f919e)<br />
