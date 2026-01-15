@@ -34,11 +34,16 @@ const Linkacc=styled(Link)`
         color:#03112B;
     }`
 
-const Header = () => {       
+const Header = ({ isUserAuthenticated }) => {       
+    const logout = async () => {
+        sessionStorage.clear();
+        isUserAuthenticated(false);
+    }
+
     return (
         <Component>
             <Container>
-            <LogoutButton variant="contained">
+            <LogoutButton variant="contained" onClick={() => logout()}>
                 <Linkacc to='/account'>LOGOUT</Linkacc>
             </LogoutButton>
             </Container>
