@@ -1,4 +1,3 @@
-//Each Post/blog card on homepage containing title,picture,small description/part of blog
 import { styled, Box, Typography } from '@mui/material';
 
 const Container = styled(Box)`

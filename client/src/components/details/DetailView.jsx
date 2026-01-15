@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Box, Typography, styled } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete, Edit, ThumbUp, ThumbDown, ThumbUpAltOutlined, ThumbDownAltOutlined } from '@mui/icons-material';
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { API } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
@@ -73,6 +73,23 @@ const DetailView = () => {
         navigate('/')
     }
 
+    const toggleLike = async () => {
+        let response = await API.likePost({ username: account.username, _id: post._id });
+        if (response.isSuccess) {
+            // Re-fetch post data to update counts and UI
+            let updatedPost = await API.getPostById(id);
+            if (updatedPost.isSuccess) setPost(updatedPost.data);
+        }
+    }
+
+    const toggleDislike = async () => {
+        let response = await API.dislikePost({ username: account.username, _id: post._id });
+        if (response.isSuccess) {
+            let updatedPost = await API.getPostById(id);
+            if (updatedPost.isSuccess) setPost(updatedPost.data);
+        }
+    }
+
     return (
         <Container>
             <Image src={post.picture || url} alt="post" />
@@ -91,7 +108,25 @@ const DetailView = () => {
                 <Link to={`/?username=${post.username}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                     <Typography>Author: <span style={{fontWeight: 600}}>{post.username}</span></Typography>
                 </Link>
-                <Typography style={{marginLeft: 'auto'}}>{new Date(post.createdDate).toDateString()}</Typography>
+                <Box style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+                    <Box style={{ display: 'flex', alignItems: 'center', marginRight: 20, cursor: 'pointer' }} onClick={() => toggleLike()}>
+                        {
+                            post.likes && post.likes.includes(account.username) ? 
+                            <ThumbUp color="primary" fontSize="small" /> : 
+                            <ThumbUpAltOutlined fontSize="small" />
+                        }
+                        <Typography style={{ marginLeft: 5 }}>{post.likes?.length || 0}</Typography>
+                    </Box>
+                    <Box style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => toggleDislike()}>
+                        {
+                            post.dislikes && post.dislikes.includes(account.username) ? 
+                            <ThumbDown color="error" fontSize="small" /> : 
+                            <ThumbDownAltOutlined fontSize="small" />
+                        }
+                        <Typography style={{ marginLeft: 5 }}>{post.dislikes?.length || 0}</Typography>
+                    </Box>
+                    <Typography style={{ marginLeft: 30 }}>{new Date(post.createdDate).toDateString()}</Typography>
+                </Box>
             </Author>
 
             <Typography>{post.description}</Typography>

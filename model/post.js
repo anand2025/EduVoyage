@@ -24,6 +24,14 @@ const PostSchema = mongoose.Schema({
     },
     createdDate: {
         type: Date
+    },
+    likes: {
+        type: Array, // Array of usernames
+        default: []
+    },
+    dislikes: {
+        type: Array, // Array of usernames
+        default: []
     }
 });
 

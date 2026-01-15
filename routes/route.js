@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { createPost, updatePost, deletePost, getPost, getAllPosts } from '../controller/post-controller.js';
+import { createPost, updatePost, deletePost, getPost, getAllPosts, likePost, dislikePost } from '../controller/post-controller.js';
 import { uploadImage, getImage } from '../controller/image-controller.js';
 import { newComment, getComments, deleteComment } from '../controller/comment-controller.js';
 import { loginUser, singupUser, logoutUser } from '../controller/user-controller.js';
@@ -22,6 +22,8 @@ router.delete('/delete/:id', authenticateToken, deletePost);
 
 router.get('/post/:id', authenticateToken, getPost);
 router.get('/posts', authenticateToken, getAllPosts);
+router.post('/like/:id', authenticateToken, likePost);
+router.post('/dislike/:id', authenticateToken, dislikePost);
 
 router.post('/file/upload', upload.single('file'), uploadImage);
 router.get('/file/:filename', getImage);

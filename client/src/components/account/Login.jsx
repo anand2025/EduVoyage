@@ -97,6 +97,12 @@ const Login = ({ isUserAuthenticated }) => {
         showError(false);
     }, [login])
 
+    useEffect(() => {
+        if (sessionStorage.getItem('accessToken')) {
+            navigate('/');
+        }
+    }, [navigate])
+
     const onValueChange = (e) => {
         setLogin({ ...login, [e.target.name]: e.target.value });
     }
@@ -130,6 +136,9 @@ const Login = ({ isUserAuthenticated }) => {
 
             sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
             sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
+            sessionStorage.setItem('name', response.data.name);
+            sessionStorage.setItem('username', response.data.username);
+            
             setAccount({ name: response.data.name, username: response.data.username });
             
             isUserAuthenticated(true)
