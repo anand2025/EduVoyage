@@ -56,8 +56,13 @@ export const loginUser = async (request, response) => {
 
         let match = await bcrypt.compare(password, user.password);
         if (match) {
-            const accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_SECRET_KEY, { expiresIn: '60m'});
-            const refreshToken = jwt.sign(user.toJSON(), process.env.REFRESH_SECRET_KEY);
+            const payload = { 
+                username: user.username, 
+                name: user.name, 
+                _id: user._id 
+            };
+            const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '60m'});
+            const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET_KEY);
             
             const newToken = new Token({ token: refreshToken });
             await newToken.save();
@@ -116,5 +121,45 @@ export const getSavedPosts = async (request, response) => {
         return response.status(200).json(user.savedPosts);
     } catch (error) {
         return response.status(500).json({ msg: 'Error while fetching saved posts', error: error.message });
+    }
+}
+
+export const getUserDetails = async (request, response) => {
+    try {
+        const user = await User.findOne({ username: request.params.username });
+        if (!user) {
+            return response.status(404).json({ msg: 'User not found' });
+        }
+
+        // Exclude password and savedPosts for privacy/security
+        const { password, savedPosts, ...publicInfo } = user._doc;
+        return response.status(200).json(publicInfo);
+    } catch (error) {
+        return response.status(500).json({ msg: 'Error while fetching user details', error: error.message });
+    }
+}
+
+export const updateUserProfile = async (request, response) => {
+    try {
+        const { username, name, bio, profilePicture } = request.body;
+        
+        // Check image size (Base64 string size check)
+        if (profilePicture && profilePicture.length > 5 * 1024 * 1024) {
+            return response.status(413).json({ msg: "Image size is too large. Please upload an image smaller than 5MB." });
+        }
+        let user = await User.findOneAndUpdate(
+            { username: username }, 
+            { $set: { name, bio, profilePicture } },
+            { new: true }
+        );
+
+        if (!user) {
+            return response.status(404).json({ msg: 'User not found' });
+        }
+
+        const { password, ...updatedInfo } = user._doc;
+        return response.status(200).json({ msg: 'Profile updated successfully', user: updatedInfo });
+    } catch (error) {
+        return response.status(500).json({ msg: 'Error while updating profile', error: error.message });
     }
 }

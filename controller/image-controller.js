@@ -16,12 +16,14 @@ conn.once('open', () => {
 
 
 export const uploadImage = (request, response) => {
-    if(!request.file) 
-        return response.status(404).json("File not found");
-    
-    const imageUrl = `${url}/file/${request.file.filename}`;
-
-    response.status(200).json(imageUrl);    
+    try {
+        if(!request.body.image) {
+            return response.status(400).json({ msg: "No image data found in request" });
+        }
+        return response.status(200).json(request.body.image);
+    } catch (error) {
+        return response.status(500).json({ msg: "Server error during image handling", error: error.message });
+    }
 }
 
 export const getImage = async (request, response) => {

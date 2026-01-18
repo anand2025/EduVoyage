@@ -7,10 +7,7 @@ const API_URL = 'http://localhost:8000';
 
 const axiosInstance = axios.create({
     baseURL: API_URL,
-    timeout: 10000, 
-    headers: {
-        "content-type": "application/json"
-    }
+    timeout: 10000
 });
 
 axiosInstance.interceptors.request.use(
@@ -18,7 +15,11 @@ axiosInstance.interceptors.request.use(
         if (config.TYPE.params) {
             config.params = config.TYPE.params
         } else if (config.TYPE.query) {
-            config.url = config.url + '/' + config.TYPE.query;
+            if (typeof config.TYPE.query === 'object') {
+                config.url = config.url + '/' + (config.TYPE.query._id || config.TYPE.query.id);
+            } else {
+                config.url = config.url + '/' + config.TYPE.query;
+            }
         }
         return config;
     },
@@ -32,9 +33,9 @@ axiosInstance.interceptors.response.use(
         // Stop global loader here
         return processResponse(response);
     },
-    function(error) {
+    async function(error) {
         // Stop global loader here
-        return Promise.reject(ProcessError(error));
+        return Promise.reject(await ProcessError(error));
     }
 )
 // If success -> returns { isSuccess: true, data: object }
@@ -52,35 +53,36 @@ const processResponse = (response) => {
     }
 }
 
-///////////////////////////////
 // If success -> returns { isSuccess: true, data: object }
 // If fail -> returns { isError: true, status: string, msg: string, code: int }
-//////////////////////////////
+/////////////////////////////
 const ProcessError = async (error) => {
     if (error.response) {
-        // Request made and server responded with a status code 
-        // that falls out of the range of 2xx
-        if (error.response?.status === 403) {
-            // const { url, config } = error.response;
-            // console.log(error);
-            // try {
-            //     let response = await API.getRefreshToken({ token: getRefreshToken() });
-            //     if (response.isSuccess) {
-                    sessionStorage.clear();
-            //         setAccessToken(response.data.accessToken);
-
-            //         const requestData = error.toJSON();
-
-            //         let response1 = await axios({
-            //             method: requestData.config.method,
-            //             url: requestData.config.baseURL + requestData.config.url,
-            //             headers: { "content-type": "application/json", "authorization": getAccessToken() },
-            //             params: requestData.config.params
-            //         });
-            //     }
-            // } catch (error) {
-            //     return Promise.reject(error)
-            // }
+        if (error.response?.status === 401) {
+            return {
+                isError: true,
+                msg: "Unauthorized! Please log in again.",
+                code: 401
+            }
+        } else if (error.response?.status === 403) {
+            sessionStorage.clear();
+            return {
+                isError: true,
+                msg: "Your session has expired. Please log in again.",
+                code: 403
+            }
+        } else if (error.response?.status === 413) {
+            return {
+                isError: true,
+                msg: "The payload is too large. If you are uploading an image, please try a smaller one.",
+                code: 413
+            }
+        } else if (error.response?.status === 500) {
+            return {
+                isError: true,
+                msg: "Server error! Something went wrong on our end.",
+                code: 500
+            }
         } else {
             console.log("ERROR IN RESPONSE: ", error.toJSON());
             return {
@@ -90,16 +92,14 @@ const ProcessError = async (error) => {
             }
         }
     } else if (error.request) { 
-        // The request was made but no response was received
-        console.log("ERROR IN RESPONSE: ", error.toJSON());
+        console.log("ERROR IN REQUEST: ", error.toJSON());
         return {
             isError: true,
             msg: API_NOTIFICATION_MESSAGES.requestFailure,
             code: ""
         }
     } else { 
-        // Something happened in setting up the request that triggered an Error
-        console.log("ERROR IN RESPONSE: ", error.toJSON());
+        console.log("ERROR IN NETWORK: ", error.toJSON());
         return {
             isError: true,
             msg: API_NOTIFICATION_MESSAGES.networkError,

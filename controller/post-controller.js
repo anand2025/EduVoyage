@@ -3,6 +3,9 @@ import Post from '../model/post.js';
 //create post
 export const createPost = async (request, response) => {
     try {
+        if (request.body.picture && request.body.picture.length > 5 * 1024 * 1024) {
+            return response.status(413).json({ msg: "Image size is too large. Please upload an image smaller than 5MB." });
+        }
         const post = await new Post(request.body);
         await post.save();
 
@@ -15,6 +18,9 @@ export const createPost = async (request, response) => {
 //update post
 export const updatePost = async (request, response) => {
     try {
+        if (request.body.picture && request.body.picture.length > 5 * 1024 * 1024) {
+            return response.status(413).json({ msg: "Image size is too large. Please upload an image smaller than 5MB." });
+        }
         const post = await Post.findById(request.params.id);
 
         if (!post) {

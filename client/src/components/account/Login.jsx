@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { API } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
+import { setAccessToken, setRefreshToken } from '../../utils/common-utils';
 //Styling
 const Banner = styled('img')({
     width: '45%',
@@ -134,8 +135,8 @@ const Login = ({ isUserAuthenticated }) => {
         if (response.isSuccess) {
             showError('');
 
-            sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
-            sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
+            setAccessToken(response.data.accessToken);
+            setRefreshToken(response.data.refreshToken);
             sessionStorage.setItem('name', response.data.name);
             sessionStorage.setItem('username', response.data.username);
             

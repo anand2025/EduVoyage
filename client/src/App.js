@@ -15,6 +15,7 @@ import CreatePost from './components/create/CreatePost';
 import DetailView from './components/details/DetailView';
 import Update from './components/create/Update';
 import Login from './components/account/Login';
+import Profile from './components/profile/Profile';
 
 const PrivateRoute = ({ isAuthenticated, isUserAuthenticated }) => {
   const token = sessionStorage.getItem('accessToken');
@@ -50,6 +51,10 @@ function App() {
 
             <Route path='/update/:id' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
               <Route path='/update/:id' element={<Update />} />
+            </Route>
+
+            <Route path='/profile/:username' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
+              <Route path='/profile/:username' element={<Profile />} />
             </Route>
           </Routes>
         </Box>

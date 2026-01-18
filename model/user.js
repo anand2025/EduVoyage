@@ -17,6 +17,18 @@ const userSchema = mongoose.Schema({
     savedPosts: {
         type: Array, // Array of post IDs
         default: []
+    },
+    bio: {
+        type: String,
+        default: ''
+    },
+    profilePicture: {
+        type: String,
+        default: ''
+    },
+    createdDate: {
+        type: Date,
+        default: Date.now
     }
 });
 
