@@ -43,5 +43,7 @@ export const SERVICE_URLS = {
     deleteComment: { url: 'comment/delete', method: 'DELETE', query: true },
     updatePost: { url: 'update', method: 'PUT', query: true },
     likePost: { url: 'like', method: 'POST', query: true },
-    dislikePost: { url: 'dislike', method: 'POST', query: true }
+    dislikePost: { url: 'dislike', method: 'POST', query: true },
+    savePost: { url: 'save', method: 'POST' },
+    getSavedPosts: { url: 'savedPosts', method: 'GET', query: true }
 }
