@@ -63,7 +63,6 @@ const Update = () => {
     const navigate = useNavigate();
 
     const [post, setPost] = useState(initialPost);
-    const [file, setFile] = useState('');
 
     const { id } = useParams();//access the parameters of the current route
 
@@ -79,21 +78,16 @@ const Update = () => {
         fetchData();
     }, [id]);
 
-    useEffect(() => {
-        const getImage = async () => { 
-            if(file) {
-                const data = new FormData();
-                data.append("name", file.name);
-                data.append("file", file);
-                
-                const response = await API.uploadFile(data);
-                if (response.isSuccess) {
-                    setPost(prevPost => ({ ...prevPost, picture: response.data }));
-                }
-            }
+    const onFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPost(prevPost => ({ ...prevPost, picture: reader.result }));
+            };
+            reader.readAsDataURL(file);
         }
-        getImage();
-    }, [file]);
+    };
 
     const updateBlogPost = async () => {
         await API.updatePost(post);
@@ -116,7 +110,7 @@ const Update = () => {
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => setFile(e.target.files[0])}
+                    onChange={(e) => onFileChange(e)}
                 />
                 <InputTextField onChange={(e) => handleChange(e)} value={post.title} name='title' placeholder="Title" />
                 <PrimaryButton onClick={() => updateBlogPost()} variant="contained">UPDATE</PrimaryButton>

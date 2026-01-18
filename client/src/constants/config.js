@@ -45,5 +45,7 @@ export const SERVICE_URLS = {
     likePost: { url: 'like', method: 'POST', query: true },
     dislikePost: { url: 'dislike', method: 'POST', query: true },
     savePost: { url: 'save', method: 'POST' },
-    getSavedPosts: { url: 'savedPosts', method: 'GET', query: true }
+    getSavedPosts: { url: 'savedPosts', method: 'GET', query: true },
+    getUserByUsername: { url: 'user', method: 'GET', query: true },
+    updateUser: { url: 'user/update', method: 'PUT' }
 }

@@ -4,6 +4,7 @@ import { Delete, Edit, ThumbUp, ThumbDown, ThumbUpAltOutlined, ThumbDownAltOutli
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { API } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
+import { formatDate } from '../../utils/common-utils';
 // components
 import Comments from './comments/Comments';
 
@@ -178,7 +179,7 @@ const DetailView = () => {
                             <BookmarkBorder fontSize="small" />
                         }
                     </Box>
-                    <Typography style={{ marginLeft: 30 }}>{post.createdDate ? new Date(post.createdDate).toDateString() : ''}</Typography>
+                    <Typography style={{ marginLeft: 30 }}>{formatDate(post.createdDate)}</Typography>
                 </Box>
             </Author>
 

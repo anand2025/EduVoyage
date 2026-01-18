@@ -1,6 +1,7 @@
-//navbar containg logout button
 import { AppBar, Button, Toolbar, styled} from '@mui/material'; 
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { DataContext } from '../../context/DataProvider';
 
 const Component = styled(AppBar)`
     background: #FFFFFF;
@@ -13,6 +14,7 @@ const Container = styled(Toolbar)`
         padding: 20px;
         color: #000;
         text-decoration: none;
+        font-weight: 600;
     }
 `
 const LogoutButton = styled(Button)`
@@ -21,20 +23,17 @@ const LogoutButton = styled(Button)`
     background: #03112B;
     color: #fff;
     height: 40px;
-    border-radius: 2px;
+    border-radius: 8px;
+    margin-left: 20px;
     &:hover {
-    background-color: #93AFC9;
-    color:#03112B;
-  }
-`;
-const Linkacc=styled(Link)`
-    text-decoration:none;
-    color:white;
-    &:hover{
+        background-color: #93AFC9;
         color:#03112B;
-    }`
+    }
+`;
 
 const Header = ({ isUserAuthenticated }) => {       
+    const { account } = useContext(DataContext);
+
     const logout = async () => {
         sessionStorage.clear();
         isUserAuthenticated(false);
@@ -43,9 +42,11 @@ const Header = ({ isUserAuthenticated }) => {
     return (
         <Component>
             <Container>
-            <LogoutButton variant="contained" onClick={() => logout()}>
-                <Linkacc to='/account'>LOGOUT</Linkacc>
-            </LogoutButton>
+                <Link to='/'>HOME</Link>
+                <Link to={`/profile/${account.username}`}>PROFILE</Link>
+                <LogoutButton variant="contained" onClick={() => logout()}>
+                    LOGOUT
+                </LogoutButton>
             </Container>
         </Component>
     )

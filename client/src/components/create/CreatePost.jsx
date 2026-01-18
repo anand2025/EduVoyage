@@ -69,29 +69,28 @@ const CreatePost = () => {
     const location = useLocation();// returns a newly updated location object
 
     const [post, setPost] = useState(initialPost);
-    const [file, setFile] = useState('');
     const { account } = useContext(DataContext);
     //image url
     const url = post.picture ? post.picture : 'https://cdn2.hubspot.net/hubfs/145335/blogging-for-business-heres-everything-you-need-to-know.jpg' ;
     
     useEffect(() => {
-        const getImage = async () => { 
-            if(file) {
-                const data = new FormData();
-                data.append("name", file.name);
-                data.append("file", file);
-                
-                const response = await API.uploadFile(data);
-                setPost(prevPost => ({ ...prevPost, picture: response.data }));
-            }
-        }
-        getImage();
         setPost(prevPost => ({
             ...prevPost,
             categories: location.search?.split('=')[1] || 'All',
             username: account.username
         }));
-    }, [file, location.search, account.username]);
+    }, [location.search, account.username]);
+
+    const onFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPost(prevPost => ({ ...prevPost, picture: reader.result }));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     const savePost = async () => {
         await API.createPost(post);
@@ -114,7 +113,7 @@ const CreatePost = () => {
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => setFile(e.target.files[0])}
+                    onChange={(e) => onFileChange(e)}
                 />
                 <InputTextField onChange={(e) => handleChange(e)} name='title' placeholder="Title" />
                 <PrimaryButton onClick={() => savePost()} variant="contained">PUBLISH</PrimaryButton>

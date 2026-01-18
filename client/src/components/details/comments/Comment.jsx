@@ -4,6 +4,7 @@ import { Typography, Box, styled } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { API } from '../../../service/api';
 import { DataContext } from '../../../context/DataProvider';
+import { formatDate } from '../../../utils/common-utils';
 //Area where comments will be displayed
 const Component = styled(Box)`
     margin-top: 30px;
@@ -45,7 +46,7 @@ const Comment = ({ comment, setToggle }) => {
             <Container>
             {/* name of comment writer,date of writing the comment converted to readable format */}
                 <Name>{comment.name}</Name> 
-                <StyledDate>{new Date(comment.date).toDateString()}</StyledDate>
+                <StyledDate>{formatDate(comment.date)}</StyledDate>
                 { comment.name === account.username && <DeleteIcon onClick={() => removeComment()} /> }
             </Container>
             <Typography>{comment.comments}</Typography>
