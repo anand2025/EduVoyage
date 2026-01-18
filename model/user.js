@@ -13,6 +13,10 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    savedPosts: {
+        type: Array, // Array of post IDs
+        default: []
     }
 });
 

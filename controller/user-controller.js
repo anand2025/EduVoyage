@@ -7,7 +7,7 @@ import User from '../model/user.js';
 
 dotenv.config();
 
-export const singupUser = async (request, response) => {
+export const signupUser = async (request, response) => {
     try {
         const { username, name, password } = request.body;
 
@@ -82,5 +82,39 @@ export const logoutUser = async (request, response) => {
         return response.status(204).json({ msg: 'Logout successful' });
     } catch (error) {
         return response.status(500).json({ msg: 'Error while logout' });
+    }
+}
+
+export const toggleSavePost = async (request, response) => {
+    try {
+        const { username, postId } = request.body;
+        
+        let user = await User.findOne({ username });
+        if (!user) {
+            return response.status(404).json({ msg: 'User not found' });
+        }
+
+        if (user.savedPosts.includes(postId)) {
+            await User.findOneAndUpdate({ username }, { $pull: { savedPosts: postId } });
+            return response.status(200).json({ msg: 'Post unsaved successfully', type: 'unsave' });
+        } else {
+            await User.findOneAndUpdate({ username }, { $addToSet: { savedPosts: postId } });
+            return response.status(200).json({ msg: 'Post saved successfully', type: 'save' });
+        }
+    } catch (error) {
+        return response.status(500).json({ msg: 'Error while saving post', error: error.message });
+    }
+}
+
+export const getSavedPosts = async (request, response) => {
+    try {
+        const user = await User.findOne({ username: request.params.username });
+        if (!user) {
+            return response.status(404).json({ msg: 'User not found' });
+        }
+
+        return response.status(200).json(user.savedPosts);
+    } catch (error) {
+        return response.status(500).json({ msg: 'Error while fetching saved posts', error: error.message });
     }
 }

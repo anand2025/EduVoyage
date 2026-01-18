@@ -3,7 +3,7 @@ import express from 'express';
 import { createPost, updatePost, deletePost, getPost, getAllPosts, likePost, dislikePost } from '../controller/post-controller.js';
 import { uploadImage, getImage } from '../controller/image-controller.js';
 import { newComment, getComments, deleteComment } from '../controller/comment-controller.js';
-import { loginUser, singupUser, logoutUser } from '../controller/user-controller.js';
+import { loginUser, signupUser, logoutUser, toggleSavePost, getSavedPosts } from '../controller/user-controller.js';
 import { authenticateToken, createNewToken } from '../controller/jwt-controller.js';
 
 import upload from '../utils/upload.js';
@@ -11,7 +11,7 @@ import upload from '../utils/upload.js';
 const router = express.Router();
 
 router.post('/login', loginUser);
-router.post('/signup', singupUser);
+router.post('/signup', signupUser);
 router.post('/logout', logoutUser);
 
 router.post('/token', createNewToken);
@@ -24,6 +24,8 @@ router.get('/post/:id', authenticateToken, getPost);
 router.get('/posts', authenticateToken, getAllPosts);
 router.post('/like/:id', authenticateToken, likePost);
 router.post('/dislike/:id', authenticateToken, dislikePost);
+router.post('/save', authenticateToken, toggleSavePost);
+router.get('/savedPosts/:username', authenticateToken, getSavedPosts);
 
 router.post('/file/upload', upload.single('file'), uploadImage);
 router.get('/file/:filename', getImage);
