@@ -3,7 +3,7 @@ import img from './logo.png';
 
 import { TextField, Box, Button, Typography, styled, IconButton, InputAdornment, Snackbar, Alert } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { API } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
@@ -93,6 +93,7 @@ const Login = ({ isUserAuthenticated }) => {
     const [alertType, setAlertType] = useState('error');
 
     const navigate = useNavigate();
+    const location = useLocation();
     const { setAccount } = useContext(DataContext);
     useEffect(() => {
         showError(false);
@@ -144,7 +145,8 @@ const Login = ({ isUserAuthenticated }) => {
             
             isUserAuthenticated(true)
             setLogin(loginInitialValues);
-            navigate('/');
+            const redirectPath = location.state?.from?.pathname || '/';
+            navigate(redirectPath);
         } else {
             showMessage(response.msg || 'Invalid username or password');
         }
