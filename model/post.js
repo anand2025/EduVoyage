@@ -39,6 +39,8 @@ const PostSchema = mongoose.Schema({
     }
 });
 
+PostSchema.index({ title: 'text', tags: 'text' });
+
 
 const post = mongoose.model('post', PostSchema);
 
