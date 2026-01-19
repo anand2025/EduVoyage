@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Box, Typography, styled, Snackbar, Alert, Chip } from '@mui/material';
-import { Delete, Edit, ThumbUp, ThumbDown, ThumbUpAltOutlined, ThumbDownAltOutlined, Bookmark, BookmarkBorder } from '@mui/icons-material';
+import { Delete, Edit, ThumbUp, ThumbDown, ThumbUpAltOutlined, ThumbDownAltOutlined, Bookmark, BookmarkBorder, VolumeUp, Stop } from '@mui/icons-material';
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { API } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
@@ -58,6 +58,7 @@ const DetailView = () => {
     const [open, setOpen] = useState(false);
     const [error, setError] = useState('');
     const [type, setType] = useState('success');
+    const [isSpeaking, setIsSpeaking] = useState(false);
     
     const { account } = useContext(DataContext);
 
@@ -82,7 +83,35 @@ const DetailView = () => {
         }
         fetchData();
         fetchSavedStatus();
+
+        return () => {
+            window.speechSynthesis.cancel();
+        };
     }, [id, account.username]);
+
+    const toggleListen = () => {
+        if (isSpeaking) {
+            window.speechSynthesis.cancel();
+            setIsSpeaking(false);
+        } else {
+            if (!post.title || !post.description) return;
+
+            const text = `${post.title}. ${post.description}`;
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            utterance.onend = () => {
+                setIsSpeaking(false);
+            };
+
+            utterance.onerror = (event) => {
+                console.error('SpeechSynthesisUtterance error', event);
+                setIsSpeaking(false);
+            };
+
+            window.speechSynthesis.speak(utterance);
+            setIsSpeaking(true);
+        }
+    };
 
     const showToast = (message, severity = 'success') => {
         setError(message);
@@ -140,7 +169,10 @@ const DetailView = () => {
     return (
         <Container>
             <Image src={post.picture || url} alt="post" />
-            <Box style={{ float: 'right' }}>
+            <Box style={{ float: 'right', display: 'flex', alignItems: 'center' }}>
+                <Box onClick={toggleListen} style={{ cursor: 'pointer', marginRight: 10 }}>
+                    {isSpeaking ? <Stop color="error" /> : <VolumeUp color="primary" />}
+                </Box>
                 {   
                     account.username === post.username && 
                     <>  
