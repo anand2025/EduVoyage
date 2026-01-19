@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
-import { Box, Typography, styled, Snackbar, Alert, Chip } from '@mui/material';
-import { Delete, Edit, ThumbUp, ThumbDown, ThumbUpAltOutlined, ThumbDownAltOutlined, Bookmark, BookmarkBorder, VolumeUp, Stop } from '@mui/icons-material';
+import { Box, Typography, styled, Snackbar, Alert, Chip, Menu, MenuItem, ListItemIcon, ListItemText, Tooltip, Zoom } from '@mui/material';
+import { Delete, Edit, ThumbUp, ThumbDown, ThumbUpAltOutlined, ThumbDownAltOutlined, Bookmark, BookmarkBorder, VolumeUp, Stop, IosShare, Link as LinkIcon, LinkedIn, Twitter } from '@mui/icons-material';
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { API } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
@@ -59,6 +59,8 @@ const DetailView = () => {
     const [error, setError] = useState('');
     const [type, setType] = useState('success');
     const [isSpeaking, setIsSpeaking] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const openMenu = Boolean(anchorEl);
     
     const { account } = useContext(DataContext);
 
@@ -166,18 +168,53 @@ const DetailView = () => {
         }
     }
 
+    const sharePost = (platform) => {
+        const url = window.location.href;
+        const text = `Check out this blog post: ${post.title}`;
+
+        switch (platform) {
+            case 'copy':
+                navigator.clipboard.writeText(url);
+                showToast('Link copied to clipboard!');
+                break;
+            case 'linkedin':
+                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+                break;
+            case 'twitter':
+                window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+                break;
+            default:
+                break;
+        }
+        handleMenuClose();
+    }
+
+    const handleMenuClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <Container>
             <Image src={post.picture || url} alt="post" />
             <Box style={{ float: 'right', display: 'flex', alignItems: 'center' }}>
-                <Box onClick={toggleListen} style={{ cursor: 'pointer', marginRight: 10 }}>
-                    {isSpeaking ? <Stop color="error" /> : <VolumeUp color="primary" />}
-                </Box>
+                <Tooltip title={isSpeaking ? "Stop" : "Listen"} arrow TransitionComponent={Zoom}>
+                    <Box onClick={toggleListen} style={{ cursor: 'pointer', marginRight: 10 }}>
+                        {isSpeaking ? <Stop color="error" /> : <VolumeUp color="primary" />}
+                    </Box>
+                </Tooltip>
                 {   
                     account.username === post.username && 
                     <>  
-                        <Link to={`/update/${post._id}`}><EditIcon color="primary" /></Link>
-                        <DeleteIcon onClick={() => deleteBlog()} color="error" />
+                        <Tooltip title="Edit" arrow TransitionComponent={Zoom}>
+                            <Link to={`/update/${post._id}`}><EditIcon color="primary" /></Link>
+                        </Tooltip>
+                        <Tooltip title="Delete" arrow TransitionComponent={Zoom}>
+                            <DeleteIcon onClick={() => deleteBlog()} color="error" />
+                        </Tooltip>
                     </>
                 }
             </Box>
@@ -188,30 +225,89 @@ const DetailView = () => {
                     <Typography>Author: <span style={{fontWeight: 600}}>{post.username}</span></Typography>
                 </Link>
                 <Box style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
-                    <Box style={{ display: 'flex', alignItems: 'center', marginRight: 20, cursor: 'pointer' }} onClick={() => toggleLike()}>
-                        {
-                            post.likes && post.likes.includes(account.username) ? 
-                            <ThumbUp color="primary" fontSize="small" /> : 
-                            <ThumbUpAltOutlined fontSize="small" />
-                        }
-                        <Typography style={{ marginLeft: 5 }}>{post.likes?.length || 0}</Typography>
+                    <Tooltip title="Like" arrow TransitionComponent={Zoom}>
+                        <Box style={{ display: 'flex', alignItems: 'center', marginRight: 20, cursor: 'pointer' }} onClick={() => toggleLike()}>
+                            {
+                                post.likes && post.likes.includes(account.username) ? 
+                                <ThumbUp color="primary" fontSize="small" /> : 
+                                <ThumbUpAltOutlined fontSize="small" />
+                            }
+                            <Typography style={{ marginLeft: 5 }}>{post.likes?.length || 0}</Typography>
+                        </Box>
+                    </Tooltip>
+                    <Tooltip title="Dislike" arrow TransitionComponent={Zoom}>
+                        <Box style={{ display: 'flex', alignItems: 'center', marginRight: 20, cursor: 'pointer' }} onClick={() => toggleDislike()}>
+                            {
+                                post.dislikes && post.dislikes.includes(account.username) ? 
+                                <ThumbDown color="error" fontSize="small" /> : 
+                                <ThumbDownAltOutlined fontSize="small" />
+                            }
+                            <Typography style={{ marginLeft: 5 }}>{post.dislikes?.length || 0}</Typography>
+                        </Box>
+                    </Tooltip>
+                    <Tooltip title="Save" arrow TransitionComponent={Zoom}>
+                        <Box style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 20 }} onClick={() => toggleSave()}>
+                            {
+                                isSaved ? 
+                                <Bookmark color="primary" fontSize="small" /> : 
+                                <BookmarkBorder fontSize="small" />
+                            }
+                        </Box>
+                    </Tooltip>
+                    <Box style={{ display: 'flex', alignItems: 'center', marginRight: 20 }}>
+                        <Tooltip title="Share" arrow TransitionComponent={Zoom}>
+                            <IosShare 
+                                color="primary" 
+                                fontSize="small" 
+                                style={{ cursor: 'pointer' }} 
+                                onClick={handleMenuClick} 
+                            />
+                        </Tooltip>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={openMenu}
+                            onClose={handleMenuClose}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            PaperProps={{
+                                elevation: 3,
+                                sx: {
+                                    borderRadius: '12px',
+                                    mt: 1.5,
+                                    '& .MuiMenuItem-root': {
+                                        px: 2,
+                                        py: 1,
+                                    },
+                                },
+                            }}
+                        >
+                            <MenuItem onClick={() => sharePost('copy')}>
+                                <ListItemIcon>
+                                    <LinkIcon fontSize="small" />
+                                </ListItemIcon>
+                                <ListItemText>Copy link</ListItemText>
+                            </MenuItem>
+                            <MenuItem onClick={() => sharePost('linkedin')}>
+                                <ListItemIcon>
+                                    <LinkedIn fontSize="small" color="primary" />
+                                </ListItemIcon>
+                                <ListItemText>Share on LinkedIn</ListItemText>
+                            </MenuItem>
+                            <MenuItem onClick={() => sharePost('twitter')}>
+                                <ListItemIcon>
+                                    <Twitter fontSize="small" color="primary" />
+                                </ListItemIcon>
+                                <ListItemText>Share on X</ListItemText>
+                            </MenuItem>
+                        </Menu>
                     </Box>
-                    <Box style={{ display: 'flex', alignItems: 'center', marginRight: 20, cursor: 'pointer' }} onClick={() => toggleDislike()}>
-                        {
-                            post.dislikes && post.dislikes.includes(account.username) ? 
-                            <ThumbDown color="error" fontSize="small" /> : 
-                            <ThumbDownAltOutlined fontSize="small" />
-                        }
-                        <Typography style={{ marginLeft: 5 }}>{post.dislikes?.length || 0}</Typography>
-                    </Box>
-                    <Box style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => toggleSave()}>
-                        {
-                            isSaved ? 
-                            <Bookmark color="primary" fontSize="small" /> : 
-                            <BookmarkBorder fontSize="small" />
-                        }
-                    </Box>
-                    <Typography style={{ marginLeft: 30 }}>{formatDate(post.createdDate)}</Typography>
+                    <Typography style={{ marginLeft: 'auto' }}>{formatDate(post.createdDate)}</Typography>
                 </Box>
             </Author>
 

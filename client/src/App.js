@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 // This allows nested UI to show up when child routes are rendered.
 //BROWSER stores the current location in the browser's address bar using clean URLs 
 //and navigates using the browser's built-in history stack.
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 
 //components
 import DataProvider from './context/DataProvider';
@@ -19,11 +19,13 @@ import Profile from './components/profile/Profile';
 
 const PrivateRoute = ({ isAuthenticated, isUserAuthenticated }) => {
   const token = sessionStorage.getItem('accessToken');
+  const location = useLocation();
+
   return isAuthenticated && token ? 
     <>
       <Header isUserAuthenticated={isUserAuthenticated} />
       <Outlet />
-    </> : <Navigate replace to='/account' />
+    </> : <Navigate replace to='/account' state={{ from: location }} />
 };
 
 function App() {
