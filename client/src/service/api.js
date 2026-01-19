@@ -80,7 +80,7 @@ const ProcessError = async (error) => {
         } else if (error.response?.status === 500) {
             return {
                 isError: true,
-                msg: "Server error! Something went wrong on our end.",
+                msg: error.response?.data?.msg || "Server error! Something went wrong on our end.",
                 code: 500
             }
         } else {

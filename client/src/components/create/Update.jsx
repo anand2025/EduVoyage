@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, styled, TextareaAutosize, Button, FormControl, InputBase } from '@mui/material';
+import { Box, styled, TextareaAutosize, Button, FormControl, InputBase, Snackbar, Alert } from '@mui/material';
 import { AddCircle as Add } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -50,12 +50,36 @@ const StyledTextArea = styled(TextareaAutosize)`
     }
 `;
 
+const TagsInput = styled(InputBase)`
+    width: 100%;
+    margin-top: 10px;
+    font-size: 16px;
+    padding: 12px 20px;
+    border: 1px solid #d3cede;
+    border-radius: 8px;
+    background: #f9fbff;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    
+    &:hover {
+        border-color: #93AFC9;
+        background: #fff;
+    }
+    
+    &.Mui-focused {
+        border-color: #03112B;
+        box-shadow: 0 4px 12px rgba(3, 17, 43, 0.1);
+        background: #fff;
+    }
+`;
+
 const initialPost = {
     title: '',
     description: '',
     picture: '',
     username: 'user',
     categories: 'Technology',
+    tags: [],
     createdDate: new Date()
 }
 
@@ -63,6 +87,10 @@ const Update = () => {
     const navigate = useNavigate();
 
     const [post, setPost] = useState(initialPost);
+    const [tagString, setTagString] = useState('');
+    const [open, setOpen] = useState(false);
+    const [error, setError] = useState('');
+    const [type, setType] = useState('success');
 
     const { id } = useParams();//access the parameters of the current route
 
@@ -73,6 +101,9 @@ const Update = () => {
             let response = await API.getPostById(id);
             if (response.isSuccess) {
                 setPost(response.data);
+                if (response.data.tags) {
+                    setTagString(response.data.tags.join(', '));
+                }
             }
         }
         fetchData();
@@ -89,9 +120,28 @@ const Update = () => {
         }
     };
 
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
+    const showToast = (message, severity = 'success') => {
+        setError(message);
+        setType(severity);
+        setOpen(true);
+    }
+
     const updateBlogPost = async () => {
-        await API.updatePost(post);
-        navigate(`/details/${id}`);
+        const tagsArray = tagString.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+        const postToUpdate = { ...post, tags: tagsArray };
+        let response = await API.updatePost(postToUpdate);
+        if (response.isSuccess) {
+            navigate(`/details/${id}`);
+        } else {
+            showToast(response.msg, 'error');
+        }
     }
 
     const handleChange = (e) => {
@@ -116,6 +166,16 @@ const Update = () => {
                 <PrimaryButton onClick={() => updateBlogPost()} variant="contained">UPDATE</PrimaryButton>
             </StyledFormControl>
 
+            <Box style={{ marginTop: 20 }}>
+                <span style={{ fontSize: 14, color: '#878787', fontWeight: 600, marginLeft: 5 }}>Edit Tags</span>
+                <TagsInput 
+                    onChange={(e) => setTagString(e.target.value)} 
+                    name='tags' 
+                    value={tagString}
+                    placeholder="Separate tags with commas (e.g. tech, react, node)" 
+                />
+            </Box>
+
             <StyledTextArea
                 rowsMin={5}
                 placeholder="Share your story..."
@@ -123,6 +183,11 @@ const Update = () => {
                 onChange={(e) => handleChange(e)} 
                 value={post.description}
             />
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity={type} sx={{ width: '100%' }}>
+                    {error}
+                </Alert>
+            </Snackbar>
         </Container>
     )
 }

@@ -9,9 +9,9 @@ export const createPost = async (request, response) => {
         const post = await new Post(request.body);
         await post.save();
 
-        response.status(200).json('Post saved successfully');
+        response.status(200).json({ msg: 'Post saved successfully' });
     } catch (error) {
-        response.status(500).json(error);
+        response.status(500).json({ msg: error.message });
     }
 }
 
@@ -31,7 +31,7 @@ export const updatePost = async (request, response) => {
 
         response.status(200).json('Post updated successfully');
     } catch (error) {
-        response.status(500).json(error);
+        response.status(500).json({ msg: error.message });
     }
 }
 
@@ -48,7 +48,7 @@ export const deletePost = async (request, response) => {
 
         response.status(200).json('Post deleted successfully');
     } catch (error) {
-        response.status(500).json(error)
+        response.status(500).json({ msg: error.message });
     }
 }
 
@@ -58,25 +58,28 @@ export const getPost = async (request, response) => {
 
         response.status(200).json(post);
     } catch (error) {
-        response.status(500).json(error)
+        response.status(500).json({ msg: error.message });
     }
 }
 
 export const getAllPosts = async (request, response) => {
     let username = request.query.username;
     let category = request.query.category;
+    let tag = request.query.tag;
     let posts;
     try {
         if(username) 
             posts = await Post.find({ username: username });
         else if (category) 
             posts = await Post.find({ categories: category });
+        else if (tag)
+            posts = await Post.find({ tags: tag });
         else 
             posts = await Post.find({});
             
         response.status(200).json(posts);
     } catch (error) {
-        response.status(500).json(error)
+        response.status(500).json({ msg: error.message });
     }
 }
 
@@ -98,7 +101,7 @@ export const likePost = async (request, response) => {
             return response.status(200).json({ msg: 'Post liked successfully', type: 'like' });
         }
     } catch (error) {
-        return response.status(500).json(error);
+        return response.status(500).json({ msg: error.message });
     }
 }
 
@@ -120,6 +123,6 @@ export const dislikePost = async (request, response) => {
             return response.status(200).json({ msg: 'Post disliked successfully', type: 'dislike' });
         }
     } catch (error) {
-        return response.status(500).json(error);
+        return response.status(500).json({ msg: error.message });
     }
 }
