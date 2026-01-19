@@ -8,18 +8,19 @@ import Post from './Post';
 
 const Posts = () => {
     const [posts, getPosts] = useState([]);
-    const [searchParams] = useSearchParams();//used to read and modify the query string in the URL for the current location
+    const [searchParams] = useSearchParams();
     const category = searchParams.get('category');
+    const search = searchParams.get('search');
 
     useEffect(() => {
         const fetchData = async () => { 
-            let response = await API.getAllPosts({ category : category || '' });
+            let response = await API.getAllPosts({ category: category || '', search: search || '' });
             if (response.isSuccess) {
                 getPosts(response.data);
             }
         }
         fetchData();
-    }, [category]);
+    }, [category, search]);
 
     return (
         <>

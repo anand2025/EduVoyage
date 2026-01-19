@@ -66,6 +66,7 @@ export const getAllPosts = async (request, response) => {
     let username = request.query.username;
     let category = request.query.category;
     let tag = request.query.tag;
+    let search = request.query.search;
     let posts;
     try {
         if(username) 
@@ -74,6 +75,14 @@ export const getAllPosts = async (request, response) => {
             posts = await Post.find({ categories: category });
         else if (tag)
             posts = await Post.find({ tags: tag });
+        else if (search) {
+            posts = await Post.find({
+                $or: [
+                    { title: { $regex: search, $options: 'i' } },
+                    { tags: { $regex: search, $options: 'i' } }
+                ]
+            });
+        }
         else 
             posts = await Post.find({});
             
