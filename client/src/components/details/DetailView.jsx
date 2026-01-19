@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Box, Typography, styled, Snackbar, Alert } from '@mui/material';
+import { Box, Typography, styled, Snackbar, Alert, Chip } from '@mui/material';
 import { Delete, Edit, ThumbUp, ThumbDown, ThumbUpAltOutlined, ThumbDownAltOutlined, Bookmark, BookmarkBorder } from '@mui/icons-material';
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { API } from '../../service/api';
@@ -183,7 +183,16 @@ const DetailView = () => {
                 </Box>
             </Author>
 
-            <Typography>{post.description}</Typography>
+            <Typography style={{ marginBottom: 20 }}>{post.description}</Typography>
+            
+            {post.tags && post.tags.length > 0 && (
+                <Box style={{ marginBottom: 20 }}>
+                    {post.tags.map(tag => (
+                        <Chip key={tag} label={`#${tag}`} style={{ marginRight: 5 }} variant="outlined" />
+                    ))}
+                </Box>
+            )}
+
             <Comments post={post} />
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity={type} sx={{ width: '100%' }}>

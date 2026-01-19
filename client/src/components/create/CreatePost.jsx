@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { styled, Box, TextareaAutosize, Button, InputBase, FormControl} from '@mui/material';
+import { styled, Box, TextareaAutosize, Button, InputBase, FormControl, Snackbar, Alert } from '@mui/material';
 import { AddCircle as Add } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { API } from '../../service/api';
@@ -43,9 +43,7 @@ const InputTextField = styled(InputBase)`
     margin: 0 30px;
     font-size: 25px;
 `;
-//a textarea HTML element that automatically adjusts its height
-// to match the length of the content within.
-const Textarea = styled(TextareaAutosize)`
+const StyledTextArea = styled(TextareaAutosize)`
     width: 100%;
     border: none;
     margin-top: 50px;
@@ -55,12 +53,36 @@ const Textarea = styled(TextareaAutosize)`
     }
 `;
 
+const TagsInput = styled(InputBase)`
+    width: 100%;
+    margin-top: 10px;
+    font-size: 16px;
+    padding: 12px 20px;
+    border: 1px solid #d3cede;
+    border-radius: 8px;
+    background: #f9fbff;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    
+    &:hover {
+        border-color: #93AFC9;
+        background: #fff;
+    }
+    
+    &.Mui-focused {
+        border-color: #03112B;
+        box-shadow: 0 4px 12px rgba(3, 17, 43, 0.1);
+        background: #fff;
+    }
+`;
+
 const initialPost = {
     title: '',
     description: '',
     picture: '',
     username: '',
     categories: '',
+    tags: [],
     createdDate: new Date()
 }
 
@@ -69,6 +91,11 @@ const CreatePost = () => {
     const location = useLocation();// returns a newly updated location object
 
     const [post, setPost] = useState(initialPost);
+    const [tagString, setTagString] = useState('');
+    const [open, setOpen] = useState(false);
+    const [error, setError] = useState('');
+    const [type, setType] = useState('success');
+    
     const { account } = useContext(DataContext);
     //image url
     const url = post.picture ? post.picture : 'https://cdn2.hubspot.net/hubfs/145335/blogging-for-business-heres-everything-you-need-to-know.jpg' ;
@@ -92,9 +119,28 @@ const CreatePost = () => {
         }
     };
 
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
+    const showToast = (message, severity = 'success') => {
+        setError(message);
+        setType(severity);
+        setOpen(true);
+    }
+
     const savePost = async () => {
-        await API.createPost(post);
-        navigate('/');
+        const tagsArray = tagString.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+        const postToSave = { ...post, tags: tagsArray };
+        let response = await API.createPost(postToSave);
+        if (response.isSuccess) {
+            navigate('/');
+        } else {
+            showToast(response.msg, 'error');
+        }
     }
 
     const handleChange = (e) => {
@@ -119,12 +165,26 @@ const CreatePost = () => {
                 <PrimaryButton onClick={() => savePost()} variant="contained">PUBLISH</PrimaryButton>
             </StyledFormControl>
 
-            <Textarea
+            <Box style={{ marginTop: 20 }}>
+                <span style={{ fontSize: 14, color: '#878787', fontWeight: 600, marginLeft: 5 }}>Add Tags</span>
+                <TagsInput 
+                    onChange={(e) => setTagString(e.target.value)} 
+                    name='tags' 
+                    placeholder="Separate tags with commas (e.g. tech, react, node)" 
+                />
+            </Box>
+
+            <StyledTextArea
                 rowsMin={5}
                 placeholder="Share your story..."
                 name='description'
                 onChange={(e) => handleChange(e)} 
             />
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity={type} sx={{ width: '100%' }}>
+                    {error}
+                </Alert>
+            </Snackbar>
         </Container>
     )
 }

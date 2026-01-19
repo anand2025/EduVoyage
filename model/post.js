@@ -32,6 +32,10 @@ const PostSchema = mongoose.Schema({
     dislikes: {
         type: Array, // Array of usernames
         default: []
+    },
+    tags: {
+        type: Array,
+        default: []
     }
 });
 
