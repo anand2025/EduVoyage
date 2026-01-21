@@ -16,6 +16,7 @@ import DetailView from './components/details/DetailView';
 import Update from './components/create/Update';
 import Login from './components/account/Login';
 import Profile from './components/profile/Profile';
+import LandingPage from './components/landing/LandingPage';
 
 const PrivateRoute = ({ isAuthenticated, isUserAuthenticated }) => {
   const token = sessionStorage.getItem('accessToken');
@@ -39,8 +40,10 @@ function App() {
           <Routes>
             <Route path='/account' element={<Login isUserAuthenticated={isUserAuthenticated} />} />
             
-            <Route path='/' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
-              <Route path='/' element={<Home />} />
+            <Route path='/' element={isAuthenticated ? <Navigate replace to='/home' /> : <LandingPage />} />
+
+            <Route path='/home' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
+              <Route path='/home' element={<Home />} />
             </Route>
 
             <Route path='/create' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
