@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Box, Typography, styled, Snackbar, Alert, Chip, Menu, MenuItem, ListItemIcon, ListItemText, Tooltip, Zoom } from '@mui/material';
+import { Box, Typography, styled, Snackbar, Alert, Chip, Menu, MenuItem, ListItemIcon, ListItemText, Tooltip, Zoom, CircularProgress } from '@mui/material';
 import { Delete, Edit, ThumbUp, ThumbDown, ThumbUpAltOutlined, ThumbDownAltOutlined, Bookmark, BookmarkBorder, VolumeUp, Stop, IosShare, Link as LinkIcon, LinkedIn, Twitter } from '@mui/icons-material';
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { API } from '../../service/api';
@@ -60,6 +60,7 @@ const DetailView = () => {
     const [type, setType] = useState('success');
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [loading, setLoading] = useState(true);
     const openMenu = Boolean(anchorEl);
     
     const { account } = useContext(DataContext);
@@ -69,11 +70,37 @@ const DetailView = () => {
     
     useEffect(() => {
         const fetchData = async () => {
-            let response = await API.getPostById(id);
-            if (response.isSuccess) {
-                setPost(response.data);
-            } else {
-                showToast(response.msg, 'error');
+            try {
+                setLoading(true);
+                console.log('Fetching post with ID:', id);
+                let response = await API.getPostById(id);
+                console.log('API Response:', response);
+                
+                if (response.isSuccess) {
+                    console.log('Post data:', response.data);
+                    setPost(response.data);
+                } else if (response.isError) {
+                    console.error('API Error:', response);
+                    showToast(response.msg || 'Failed to load post', 'error');
+                    // Redirect to home after showing error
+                    setTimeout(() => {
+                        navigate('/home');
+                    }, 2000);
+                } else {
+                    console.error('Unexpected response format:', response);
+                    showToast('Failed to load post', 'error');
+                    setTimeout(() => {
+                        navigate('/home');
+                    }, 2000);
+                }
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching post:', error);
+                setLoading(false);
+                showToast('An error occurred while loading the post', 'error');
+                setTimeout(() => {
+                    navigate('/home');
+                }, 2000);
             }
         }
         const fetchSavedStatus = async () => {
@@ -89,7 +116,7 @@ const DetailView = () => {
         return () => {
             window.speechSynthesis.cancel();
         };
-    }, [id, account.username]);
+    }, [id, account.username, navigate]);
 
     const toggleListen = () => {
         if (isSpeaking) {
@@ -199,8 +226,18 @@ const DetailView = () => {
 
     return (
         <Container>
-            <Image src={post.picture || url} alt="post" />
-            <Box style={{ float: 'right', display: 'flex', alignItems: 'center' }}>
+            {loading ? (
+                <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+                    <CircularProgress />
+                </Box>
+            ) : !post || !post._id ? (
+                <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+                    <Typography variant="h6">Post not found</Typography>
+                </Box>
+            ) : (
+                <>
+                    <Image src={post.picture || url} alt="post" />
+                    <Box style={{ float: 'right', display: 'flex', alignItems: 'center' }}>
                 <Tooltip title={isSpeaking ? "Stop" : "Listen"} arrow TransitionComponent={Zoom}>
                     <Box onClick={toggleListen} style={{ cursor: 'pointer', marginRight: 10 }}>
                         {isSpeaking ? <Stop color="error" /> : <VolumeUp color="primary" />}
@@ -327,6 +364,8 @@ const DetailView = () => {
                     {error}
                 </Alert>
             </Snackbar>
+                </>
+            )}
         </Container>
     )
 }

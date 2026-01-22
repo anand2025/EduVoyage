@@ -43,6 +43,7 @@ const Comments = ({ post }) => {
 
     useEffect(() => {
         const getData = async () => {
+            if (!post._id) return; // Don't fetch if post ID doesn't exist
             const response = await API.getAllComments(post._id);
             if (response.isSuccess) {
                 setComments(response.data);

@@ -25,7 +25,9 @@ const PrivateRoute = ({ isAuthenticated, isUserAuthenticated }) => {
   return isAuthenticated && token ? 
     <>
       <Header isUserAuthenticated={isUserAuthenticated} />
-      <Outlet />
+      <Box style={{ marginTop: 64 }}>
+        <Outlet />
+      </Box>
     </> : <Navigate replace to='/account' state={{ from: location }} />
 };
 
@@ -36,7 +38,7 @@ function App() {
   return (
     <DataProvider>
       <BrowserRouter>
-        <Box style={{ marginTop: 64 }}>
+        <Box>
           <Routes>
             <Route path='/account' element={<Login isUserAuthenticated={isUserAuthenticated} />} />
             
