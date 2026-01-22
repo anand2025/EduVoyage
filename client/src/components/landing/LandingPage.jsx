@@ -1,12 +1,22 @@
-
 import React from 'react';
 import { Box, Typography, Button, Grid, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/system';
+import heroBg from '../../assets/images/landing-bg.png';
 
 // Styled Components for custom look
+import { keyframes } from '@mui/system';
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
 const HeroSection = styled(Box)(({ theme }) => ({
-    background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${heroBg})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
     color: '#fff',
     padding: '100px 0',
     textAlign: 'center',
@@ -14,7 +24,8 @@ const HeroSection = styled(Box)(({ theme }) => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: '60vh'
+    minHeight: '60vh',
+    animation: `${fadeIn} 1s ease-out`
 }));
 
 const FeatureSection = styled(Box)({
@@ -30,14 +41,21 @@ const Footer = styled(Box)({
 });
 
 const FeatureCard = styled(Box)({
-    padding: '30px',
+    padding: '40px',
     textAlign: 'center',
-    borderRadius: '10px',
+    borderRadius: '20px',
     backgroundColor: '#fff',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-    transition: 'transform 0.3s ease',
+    boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+    transition: 'all 0.4s ease',
+    border: '1px solid rgba(0,0,0,0.05)',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
     '&:hover': {
-        transform: 'translateY(-10px)',
+        transform: 'translateY(-15px)',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+        borderColor: '#2a5298',
     }
 });
 
@@ -59,7 +77,16 @@ const LandingPage = () => {
                         size="large" 
                         component={Link} 
                         to="/account"
-                        style={{ padding: '15px 40px', fontSize: '1.2rem', borderRadius: '50px', textTransform: 'none', background: '#FF6B6B' }}
+                        style={{ 
+                            padding: '15px 50px', 
+                            fontSize: '1.2rem', 
+                            borderRadius: '50px', 
+                            textTransform: 'none', 
+                            background: 'linear-gradient(45deg, #FF6B6B 30%, #FF8E53 90%)',
+                            boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+                            fontWeight: '600',
+                            letterSpacing: '0.5px'
+                        }}
                     >
                         Get Started
                     </Button>
@@ -69,13 +96,10 @@ const LandingPage = () => {
             {/* Features Section */}
             <FeatureSection>
                 <Container>
-                    <Typography variant="h3" component="h2" align="center" gutterBottom style={{ marginBottom: '60px', color: '#333', fontWeight: 'bold' }}>
-                        Why Choose EduVoyage?
-                    </Typography>
                     <Grid container spacing={4}>
                         <Grid item xs={12} md={4}>
-                            <FeatureCard>
-                                <Typography variant="h4" gutterBottom style={{ color: '#1e3c72' }}>
+                            <FeatureCard style={{ animation: `${fadeIn} 1s ease-out 0.2s backwards` }}>
+                                <Typography variant="h4" gutterBottom style={{ color: '#1e3c72', fontWeight: 600 }}>
                                     Create
                                 </Typography>
                                 <Typography>
@@ -84,8 +108,8 @@ const LandingPage = () => {
                             </FeatureCard>
                         </Grid>
                         <Grid item xs={12} md={4}>
-                            <FeatureCard>
-                                <Typography variant="h4" gutterBottom style={{ color: '#1e3c72' }}>
+                            <FeatureCard style={{ animation: `${fadeIn} 1s ease-out 0.4s backwards` }}>
+                                <Typography variant="h4" gutterBottom style={{ color: '#1e3c72', fontWeight: 600 }}>
                                     Connect
                                 </Typography>
                                 <Typography>
@@ -94,8 +118,8 @@ const LandingPage = () => {
                             </FeatureCard>
                         </Grid>
                         <Grid item xs={12} md={4}>
-                            <FeatureCard>
-                                <Typography variant="h4" gutterBottom style={{ color: '#1e3c72' }}>
+                            <FeatureCard style={{ animation: `${fadeIn} 1s ease-out 0.6s backwards` }}>
+                                <Typography variant="h4" gutterBottom style={{ color: '#1e3c72', fontWeight: 600 }}>
                                     Grow
                                 </Typography>
                                 <Typography>
