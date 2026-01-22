@@ -7,7 +7,9 @@ const Container = styled(Box)`
     display: flex;
     align-items: center;
     flex-direction: column;
-    height: 350px;
+    height: auto;
+    min-height: 350px;
+    padding-bottom: 10px;
     & > img, & > p {
         padding: 0 5px 5px 5px;
     }
@@ -36,7 +38,8 @@ const Details = styled(Typography)`
 `;
 
 const Post = ({ post }) => {
-    const url = post.picture ? post.picture : './banner.png';
+    const url = post.picture ? post.picture : 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=752&q=80';
+    
     //adding three dots...if text is not able to fix in that card
     const addEllipsis = (str, limit) => {
         return str.length > limit ? str.substring(0, limit) + '...' : str;
