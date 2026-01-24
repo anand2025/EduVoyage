@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { styled, Box, TextareaAutosize, Button, InputBase, FormControl, Snackbar, Alert } from '@mui/material';
+import { styled, Box, TextareaAutosize, Button, InputBase, FormControl, Snackbar, Alert, Select, MenuItem, InputLabel } from '@mui/material';
 import { AddCircle as Add } from '@mui/icons-material';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate,useSearchParams } from 'react-router-dom';
 import { API } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
+import { categories } from '../../constants/data';
 //media query
 const Container = styled(Box)(({ theme }) => ({
     margin: '50px 100px',
@@ -88,7 +89,7 @@ const initialPost = {
 
 const CreatePost = () => {
     const navigate = useNavigate();//perform navigation actions with better compability
-    const location = useLocation();// returns a newly updated location object
+    //const location = useLocation();// returns a newly updated location object
 
     const [post, setPost] = useState(initialPost);
     const [tagString, setTagString] = useState('');
@@ -96,6 +97,7 @@ const CreatePost = () => {
     const [error, setError] = useState('');
     const [type, setType] = useState('success');
     
+    const [searchParams] = useSearchParams();
     const { account } = useContext(DataContext);
     //image url
     const url = post.picture ? post.picture : 'https://cdn2.hubspot.net/hubfs/145335/blogging-for-business-heres-everything-you-need-to-know.jpg' ;
@@ -103,10 +105,10 @@ const CreatePost = () => {
     useEffect(() => {
         setPost(prevPost => ({
             ...prevPost,
-            categories: location.search?.split('=')[1] || 'All',
+            categories: searchParams.get('category') || 'All',
             username: account.username
         }));
-    }, [location.search, account.username]);
+    }, [searchParams, account.username]);
 
     const onFileChange = (e) => {
         const file = e.target.files[0];
@@ -137,7 +139,7 @@ const CreatePost = () => {
         const postToSave = { ...post, tags: tagsArray };
         let response = await API.createPost(postToSave);
         if (response.isSuccess) {
-            navigate('/');
+            navigate('/home');
         } else {
             showToast(response.msg, 'error');
         }
@@ -164,6 +166,27 @@ const CreatePost = () => {
                 <InputTextField onChange={(e) => handleChange(e)} name='title' placeholder="Title" />
                 <PrimaryButton onClick={() => savePost()} variant="contained">PUBLISH</PrimaryButton>
             </StyledFormControl>
+
+            <Box style={{ marginTop: 20, display: 'flex', gap: 20 }}>
+                <FormControl style={{ minWidth: 200 }}>
+                    <InputLabel id="category-select-label">Category</InputLabel>
+                    <Select
+                        labelId="category-select-label"
+                        id="category-select"
+                        value={post.categories || ''} // Ensure it handles initial 'All' or empty
+                        label="Category"
+                        name="categories"
+                        onChange={(e) => handleChange(e)}
+                    >
+                        <MenuItem value="All">All Categories</MenuItem>
+                        {categories.map(category => (
+                            <MenuItem key={category.id} value={category.type}>
+                                {category.type}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Box>
 
             <Box style={{ marginTop: 20 }}>
                 <span style={{ fontSize: 14, color: '#878787', fontWeight: 600, marginLeft: 5 }}>Add Tags</span>

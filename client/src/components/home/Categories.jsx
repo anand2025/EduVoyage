@@ -60,12 +60,12 @@ const Categories = () => {
             </Link>
             
             <Container>
-                <StyledLink to={"/"}>
+                <StyledLink to={"/home"}>
                     All Categories
                 </StyledLink>
                 {
                     categories.map(cat => (
-                        <StyledLink key={cat.id} to={`/?category=${cat.type}`}>
+                        <StyledLink key={cat.id} to={`/home?category=${cat.type}`}>
                             {cat.type}
                         </StyledLink>
                     ))
