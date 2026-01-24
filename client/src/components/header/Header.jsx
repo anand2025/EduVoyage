@@ -121,9 +121,9 @@ const Header = ({ isUserAuthenticated }) => {
     const onSearchChange = (e) => {
         setSearchText(e.target.value);
         if (e.target.value) {
-            navigate(`/?search=${e.target.value}`);
+            navigate(`/home?search=${e.target.value}`);
         } else {
-            navigate('/');
+            navigate('/home');
         }
     }
 
@@ -131,7 +131,7 @@ const Header = ({ isUserAuthenticated }) => {
         <Component>
             <Container>
                 {/* Logo / Home */}
-                <Link to='/'>
+                <Link to='/home'>
                     <HomeIcon style={{ color: '#03112B', fontSize: 30 }} />
                 </Link>
                 

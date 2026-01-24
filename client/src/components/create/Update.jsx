@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Box, styled, TextareaAutosize, Button, FormControl, InputBase, Snackbar, Alert } from '@mui/material';
+import { Box, styled, TextareaAutosize, Button, FormControl, InputBase, Snackbar, Alert, Select, MenuItem, InputLabel } from '@mui/material';
 import { AddCircle as Add } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { API } from '../../service/api';
+import { categories } from '../../constants/data';
 
 const Container = styled(Box)(({ theme }) => ({
     margin: '50px 100px',
@@ -165,6 +166,27 @@ const Update = () => {
                 <InputTextField onChange={(e) => handleChange(e)} value={post.title} name='title' placeholder="Title" />
                 <PrimaryButton onClick={() => updateBlogPost()} variant="contained">UPDATE</PrimaryButton>
             </StyledFormControl>
+
+            <Box style={{ marginTop: 20, display: 'flex', gap: 20 }}>
+                <FormControl style={{ minWidth: 200 }}>
+                    <InputLabel id="category-select-label">Category</InputLabel>
+                    <Select
+                        labelId="category-select-label"
+                        id="category-select"
+                        value={Array.isArray(post.categories) ? post.categories[0] : post.categories || 'All'}
+                        label="Category"
+                        name="categories"
+                        onChange={(e) => handleChange(e)}
+                    >
+                        <MenuItem value="All">All Categories</MenuItem>
+                        {categories.map(category => (
+                            <MenuItem key={category.id} value={category.type}>
+                                {category.type}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Box>
 
             <Box style={{ marginTop: 20 }}>
                 <span style={{ fontSize: 14, color: '#878787', fontWeight: 600, marginLeft: 5 }}>Edit Tags</span>

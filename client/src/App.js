@@ -42,7 +42,7 @@ function App() {
           <Routes>
             <Route path='/account' element={<Login isUserAuthenticated={isUserAuthenticated} />} />
             
-            <Route path='/' element={isAuthenticated ? <Navigate replace to='/home' /> : <LandingPage />} />
+            <Route path='/' element={isAuthenticated ? <Navigate replace to={{ pathname: '/home', search: window.location.search }} /> : <LandingPage />} />
 
             <Route path='/home' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
               <Route path='/home' element={<Home />} />

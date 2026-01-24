@@ -71,26 +71,37 @@ export const getAllPosts = async (request, response) => {
     let category = request.query.category;
     let tag = request.query.tag;
     let search = request.query.search;
+    
+    // Pagination parameters
+    let page = parseInt(request.query.page) || 1;
+    let limit = parseInt(request.query.limit) || 9;
+    let skip = (page - 1) * limit;
+
+    // Debug logging for filtering issue
+    console.log('getAllPosts called with query:', request.query);
+    console.log('username:', username, 'category:', category, 'search:', search, 'page:', page, 'limit:', limit);
+
     let posts;
+    let totalPosts = 0;
     try {
-        if(username) 
-            posts = await Post.find({ username: username });
-        else if (category) 
-            posts = await Post.find({ categories: category });
-        else if (tag)
-            posts = await Post.find({ tags: tag });
-        else if (search) {
-            posts = await Post.find({
-                $or: [
-                    { title: { $regex: search, $options: 'i' } },
-                    { tags: { $regex: search, $options: 'i' } }
-                ]
-            });
+        let query = {};
+        if (username) query.username = username;
+        if (category && category !== 'All') query.categories = category;
+        if (tag) query.tags = tag;
+        if (search) {
+            query.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { tags: { $regex: search, $options: 'i' } }
+            ];
         }
-        else 
-            posts = await Post.find({});
+
+        totalPosts = await Post.countDocuments(query);
+        posts = await Post.find(query)
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdDate: -1 }); // Show latest posts first
             
-        response.status(200).json(posts);
+        response.status(200).json({ posts, totalPosts, totalPages: Math.ceil(totalPosts / limit), currentPage: page });
     } catch (error) {
         response.status(500).json({ msg: error.message });
     }

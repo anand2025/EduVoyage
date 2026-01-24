@@ -108,7 +108,9 @@ const Profile = () => {
         const fetchPosts = async () => {
             let response = await API.getAllPosts({ username: username });
             if (response.isSuccess) {
-                setPosts(response.data);
+                // Handle both new paginated format { posts: [], ... } and old format []
+                const data = response.data.posts || (Array.isArray(response.data) ? response.data : []);
+                setPosts(data);
             }
         };
         fetchPosts();
@@ -164,15 +166,15 @@ const Profile = () => {
 
             <TabSection>
                 <Tabs value={tabValue} onChange={handleTabChange} textColor="primary" indicatorColor="primary">
-                    <Tab label={`Posts (${posts.length})`} sx={{ textTransform: 'none', fontWeight: 600 }} />
-                    {isOwner && <Tab label={`Saved (${savedPosts.length})`} sx={{ textTransform: 'none', fontWeight: 600 }} />}
+                    <Tab label={`Posts (${posts?.length || 0})`} sx={{ textTransform: 'none', fontWeight: 600 }} />
+                    {isOwner && <Tab label={`Saved (${savedPosts?.length || 0})`} sx={{ textTransform: 'none', fontWeight: 600 }} />}
                 </Tabs>
                 <Divider />
                 
                 <Box mt={3}>
                     {tabValue === 0 && (
                         <Grid container spacing={3}>
-                            {posts.length > 0 ? posts.map(post => (
+                            {posts?.length > 0 ? posts.map(post => (
                                 <Grid item lg={3} sm={4} xs={12} key={post._id}>
                                     <Link style={{textDecoration: 'none', color: 'inherit'}} to={`/details/${post._id}`}>
                                         <Post post={post} />
