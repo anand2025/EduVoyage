@@ -1,10 +1,6 @@
-node_modules
+node_modules/
 npm-debug.log
-build
-.git
-.env
 Dockerfile
-docker-compose.yml
 .dockerignore
 client/node_modules
 client/build
