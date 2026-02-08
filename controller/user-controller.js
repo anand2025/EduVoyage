@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 
 import Token from '../model/token.js'
 import User from '../model/user.js';
+import Post from '../model/post.js';
+import Comment from '../model/comment.js';
 
 dotenv.config();
 
@@ -92,7 +94,8 @@ export const logoutUser = async (request, response) => {
 
 export const toggleSavePost = async (request, response) => {
     try {
-        const { username, postId } = request.body;
+        const { postId } = request.body;
+        const username = request.user.username;
         
         let user = await User.findOne({ username });
         if (!user) {
@@ -113,7 +116,13 @@ export const toggleSavePost = async (request, response) => {
 
 export const getSavedPosts = async (request, response) => {
     try {
-        const user = await User.findOne({ username: request.params.username });
+        const username = request.params.username;
+
+        if (username !== request.user.username) {
+             return response.status(403).json({ msg: 'Forbidden: You can only view your own saved posts' });
+        }
+
+        const user = await User.findOne({ username: username });
         if (!user) {
             return response.status(404).json({ msg: 'User not found' });
         }
@@ -141,7 +150,8 @@ export const getUserDetails = async (request, response) => {
 
 export const updateUserProfile = async (request, response) => {
     try {
-        const { username, name, bio, profilePicture } = request.body;
+        const { name, bio, profilePicture } = request.body;
+        const username = request.user.username;
         
         // Check image size (Base64 string size check)
         if (profilePicture && profilePicture.length > 5 * 1024 * 1024) {
@@ -161,5 +171,53 @@ export const updateUserProfile = async (request, response) => {
         return response.status(200).json({ msg: 'Profile updated successfully', user: updatedInfo });
     } catch (error) {
         return response.status(500).json({ msg: 'Error while updating profile', error: error.message });
+    }
+}
+
+export const getAuthorStats = async (request, response) => {
+    try {
+        const username = request.params.username;
+        console.log('Fetching stats for author:', username);
+
+        if (username !== request.user.username) {
+            console.log('Stats access denied. Requesting user:', request.user.username, 'Target author:', username);
+            return response.status(403).json({ msg: 'Forbidden: You can only view your own statistics' });
+        }
+
+        const posts = await Post.find({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
+        console.log(`Found ${posts.length} posts for author: ${username}`);
+        
+        const totalPosts = posts.length;
+
+        let totalLikes = 0;
+        let totalDislikes = 0;
+        const categoryStats = {};
+
+        const postIds = [];
+        posts.forEach(post => {
+            totalLikes += (post.likes ? post.likes.length : 0);
+            totalDislikes += (post.dislikes ? post.dislikes.length : 0);
+            postIds.push(post._id.toString());
+
+            if (post.categories) {
+                const categories = Array.isArray(post.categories) ? post.categories : [post.categories];
+                categories.forEach(cat => {
+                    categoryStats[cat] = (categoryStats[cat] || 0) + 1;
+                });
+            }
+        });
+
+        const totalComments = await Comment.countDocuments({ postId: { $in: postIds } });
+        console.log('Stats aggregated:', { totalPosts, totalLikes, totalDislikes, totalComments, categoryStats });
+
+        return response.status(200).json({
+            totalPosts,
+            totalLikes,
+            totalDislikes,
+            totalComments,
+            categoryStats
+        });
+    } catch (error) {
+        return response.status(500).json({ msg: 'Error while fetching author stats', error: error.message });
     }
 }

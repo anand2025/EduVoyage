@@ -205,7 +205,8 @@ const DetailView = () => {
                 showToast('Link copied to clipboard!');
                 break;
             case 'linkedin':
-                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+                const linkedinText = `${text}\n\nRead more at: ${url}`;
+                window.open(`https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(linkedinText)}`, '_blank');
                 break;
             case 'twitter':
                 window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');

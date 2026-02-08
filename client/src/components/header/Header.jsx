@@ -1,5 +1,5 @@
 import { AppBar, Button, Toolbar, styled, InputBase, Box, alpha } from '@mui/material'; 
-import { Search as SearchIcon, Home as HomeIcon, Person as PersonIcon } from '@mui/icons-material';
+import { Search as SearchIcon, Home as HomeIcon, Person as PersonIcon, BarChart as ChartIcon } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { DataContext } from '../../context/DataProvider';
@@ -147,6 +147,9 @@ const Header = ({ isUserAuthenticated }) => {
 
                 {/* Right Side Icons */}
                 <MobileIcons>
+                    <Link to={`/stats/${account.username}`}>
+                        <ChartIcon style={{ color: '#03112B', fontSize: 30 }} />
+                    </Link>
                     <Link to={`/profile/${account.username}`}>
                         <PersonIcon style={{ color: '#03112B', fontSize: 30 }} />
                     </Link>

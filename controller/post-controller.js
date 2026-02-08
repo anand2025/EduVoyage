@@ -26,6 +26,10 @@ export const updatePost = async (request, response) => {
         if (!post) {
             return response.status(404).json({ msg: 'Post not found' })
         }
+
+        if (post.username !== request.user.username) {
+            return response.status(403).json({ msg: 'Forbidden: You do not own this post' });
+        }
         
         await Post.findByIdAndUpdate( request.params.id, { $set: request.body })
 
@@ -42,6 +46,10 @@ export const deletePost = async (request, response) => {
         
         if (!post) {
             return response.status(404).json({ msg: 'Post not found' });
+        }
+
+        if (post.username !== request.user.username) {
+            return response.status(403).json({ msg: 'Forbidden: You do not own this post' });
         }
 
         await post.deleteOne();
@@ -112,7 +120,7 @@ export const likePost = async (request, response) => {
         const post = await Post.findById(request.params.id);
         if (!post) return response.status(404).json({ msg: 'Post not found' });
         
-        const username = request.body.username;
+        const username = request.user.username;
 
         if (post.likes.includes(username)) {
             await Post.findByIdAndUpdate(request.params.id, { $pull: { likes: username } });
@@ -134,7 +142,7 @@ export const dislikePost = async (request, response) => {
         const post = await Post.findById(request.params.id);
         if (!post) return response.status(404).json({ msg: 'Post not found' });
 
-        const username = request.body.username;
+        const username = request.user.username;
 
         if (post.dislikes.includes(username)) {
             await Post.findByIdAndUpdate(request.params.id, { $pull: { dislikes: username } });
