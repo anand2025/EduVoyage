@@ -47,5 +47,6 @@ export const SERVICE_URLS = {
     savePost: { url: 'save', method: 'POST' },
     getSavedPosts: { url: 'savedPosts', method: 'GET', query: true },
     getUserByUsername: { url: 'user', method: 'GET', query: true },
-    updateUser: { url: 'user/update', method: 'PUT' }
+    updateUser: { url: 'user/update', method: 'PUT' },
+    getAuthorStats: { url: 'stats', method: 'GET', query: true }
 }

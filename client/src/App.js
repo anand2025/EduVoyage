@@ -17,6 +17,7 @@ import Update from './components/create/Update';
 import Login from './components/account/Login';
 import Profile from './components/profile/Profile';
 import LandingPage from './components/landing/LandingPage';
+import Stats from './components/stats/Stats';
 
 const PrivateRoute = ({ isAuthenticated, isUserAuthenticated }) => {
   const token = sessionStorage.getItem('accessToken');
@@ -45,23 +46,27 @@ function App() {
             <Route path='/' element={isAuthenticated ? <Navigate replace to={{ pathname: '/home', search: window.location.search }} /> : <LandingPage />} />
 
             <Route path='/home' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
-              <Route path='/home' element={<Home />} />
+              <Route index element={<Home />} />
             </Route>
 
             <Route path='/create' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
-              <Route path='/create' element={<CreatePost />} />
+              <Route index element={<CreatePost />} />
             </Route>
 
             <Route path='/details/:id' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
-              <Route path='/details/:id' element={<DetailView />} />
+              <Route index element={<DetailView />} />
             </Route>
 
             <Route path='/update/:id' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
-              <Route path='/update/:id' element={<Update />} />
+              <Route index element={<Update />} />
             </Route>
 
             <Route path='/profile/:username' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
-              <Route path='/profile/:username' element={<Profile />} />
+              <Route index element={<Profile />} />
+            </Route>
+
+            <Route path='/stats/:username' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
+              <Route index element={<Stats />} />
             </Route>
           </Routes>
         </Box>
