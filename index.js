@@ -10,6 +10,8 @@ import compression from 'compression';
 //components
 import Connection from './database/db.js';
 import Router from './routes/route.js';
+import swaggerUi from 'swagger-ui-express';
+import specs from './swagger.js';
 
 
 dotenv.config();
@@ -27,6 +29,10 @@ app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
 app.use('/', Router);
 
 app.use(express.static(path.join(__dirname, './client/build')));
