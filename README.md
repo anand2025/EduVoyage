@@ -8,7 +8,7 @@ EduVoyage is a comprehensive MERN stack blogging platform designed for students 
 - **Blog Management**: Full CRUD operations for blog posts with rich metadata (title, category, tags, images).
 - **Interactive Comments**: Real-time feedback loop with a robust comment system.
 - **Multimedia Support**: Image uploads managed via MongoDB GridFS for efficient storage.
-- **Advanced Filtering**: Filter blogs by categories, tags, or search by title.
+- **Filtering**: Filter blogs by categories, tags, or search by title.
 - **User Interactions**: Like/dislike posts and a personalized "Saved Posts" feature.
 - **Author Insights**: Detailed statistics for authors to track their post performance.
 - **Responsive Design**: Fully optimized for mobile, tablet, and desktop views using Material UI.
@@ -81,5 +81,4 @@ Once the backend is running, you can access the interactive API documentation at
 ![Screenshot 7](https://github.com/anand2025/EduVoyage/assets/105790879/15aa913f-ff48-4909-88a2-6219f1e5176b)<br />
 ![Screenshot 8](https://github.com/anand2025/EduVoyage/assets/105790879/b659ade7-d17d-4538-84b8-f61d38e83edd)<br />
 
----
-*For detailed technical architecture, please refer to [TECHNICAL_DOCS.md](./TECHNICAL_DOCS.md)*
+
