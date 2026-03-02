@@ -7,8 +7,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "cd client && npm install && npm run build",
-    "postinstall": "cd client && npm install"
+    "build": "npm install && npm install --prefix client && npm run build --prefix client",
+    "postinstall": "npm install --prefix client"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
