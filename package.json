@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build": "cd client && npm install && npm run build",
+    "postinstall": "cd client && npm install"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
