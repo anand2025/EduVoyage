@@ -8,10 +8,10 @@ services:
     env_file:
       - .env
     environment:
-      - MONGODB_URI=mongodb://mongodb:27017/eduvoyage
+      - MONGODB_URI=${MONGODB_URI}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
-      - =${ACCESS_SECRET_KEY}
+      - ACCESS_SECRET_KEY=${ACCESS_SECRET_KEY}
       - REFRESH_SECRET_KEY=${REFRESH_SECRET_KEY}
     depends_on:
       - mongodb
