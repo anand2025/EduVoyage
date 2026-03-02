@@ -10,7 +10,9 @@ RUN npm run build
 FROM node:20-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
+RUN apk add --no-cache python3 make g++ && \
+    npm install --legacy-peer-deps --ignore-scripts && \
+    apk del python3 make g++
 COPY . .
 # Copy built static files from frontend-builder
 COPY --from=frontend-builder /app/client/build ./client/build

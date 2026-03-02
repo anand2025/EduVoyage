@@ -4,7 +4,9 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install --legacy-peer-deps
+RUN apk add --no-cache python3 make g++ && \
+    npm install --legacy-peer-deps --ignore-scripts && \
+    apk del python3 make g++
 
 COPY . .
 
