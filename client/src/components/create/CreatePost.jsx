@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { styled, Box, TextareaAutosize, Button, InputBase, FormControl, Snackbar, Alert, Select, MenuItem, InputLabel } from '@mui/material';
-import { AddCircle as Add } from '@mui/icons-material';
+import { styled, Box, TextareaAutosize, Button, InputBase, FormControl, Snackbar, Alert, Select, MenuItem, InputLabel, Checkbox, FormControlLabel } from '@mui/material';
+import { AddCircle as Add, Star as PremiumIcon } from '@mui/icons-material';
 import { useNavigate,useSearchParams } from 'react-router-dom';
 import { API } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
@@ -84,7 +84,8 @@ const initialPost = {
     username: '',
     categories: '',
     tags: [],
-    createdDate: new Date()
+    createdDate: new Date(),
+    isPremium: false
 }
 
 const CreatePost = () => {
@@ -186,6 +187,24 @@ const CreatePost = () => {
                         ))}
                     </Select>
                 </FormControl>
+
+                {account.isPremium && (
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={post.isPremium || false}
+                                onChange={(e) => setPost({ ...post, isPremium: e.target.checked })}
+                                name="isPremium"
+                                sx={{ color: '#E8A317', '&.Mui-checked': { color: '#E8A317' } }}
+                            />
+                        }
+                        label={
+                            <Box style={{ display: 'flex', alignItems: 'center', color: '#E8A317', fontWeight: 'bold' }}>
+                                <PremiumIcon fontSize="small" style={{ marginRight: 5 }} /> Premium
+                            </Box>
+                        }
+                    />
+                )}
             </Box>
 
             <Box style={{ marginTop: 20 }}>

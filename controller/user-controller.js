@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
@@ -61,7 +61,8 @@ export const loginUser = async (request, response) => {
             const payload = { 
                 username: user.username, 
                 name: user.name, 
-                _id: user._id 
+                _id: user._id,
+                isPremium: user.isPremium
             };
             const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '60m'});
             const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET_KEY);
@@ -69,7 +70,7 @@ export const loginUser = async (request, response) => {
             const newToken = new Token({ token: refreshToken });
             await newToken.save();
         
-            return response.status(200).json({ accessToken: accessToken, refreshToken: refreshToken,name: user.name, username: user.username });
+            return response.status(200).json({ accessToken: accessToken, refreshToken: refreshToken, name: user.name, username: user.username, isPremium: user.isPremium });
         
         } else {
             return response.status(400).json({ msg: 'Password does not match' })
@@ -219,5 +220,36 @@ export const getAuthorStats = async (request, response) => {
         });
     } catch (error) {
         return response.status(500).json({ msg: 'Error while fetching author stats', error: error.message });
+    }
+}
+
+export const subscribeUser = async (request, response) => {
+    try {
+        const username = request.user.username;
+        const user = await User.findOneAndUpdate(
+            { username },
+            { $set: { isPremium: true } },
+            { new: true }
+        );
+
+        if (!user) {
+            return response.status(404).json({ msg: 'User not found' });
+        }
+
+        const payload = { 
+            username: user.username, 
+            name: user.name, 
+            _id: user._id,
+            isPremium: user.isPremium
+        };
+        const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET_KEY, { expiresIn: '60m' });
+        const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET_KEY);
+        
+        const newToken = new Token({ token: refreshToken });
+        await newToken.save();
+
+        return response.status(200).json({ msg: 'Successfully subscribed to Premium', user, accessToken, refreshToken });
+    } catch (error) {
+        return response.status(500).json({ msg: 'Error while subscribing', error: error.message });
     }
 }
