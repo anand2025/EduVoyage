@@ -33,10 +33,13 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-app.use('/', Router);
-
+// Serve React static files
 app.use(express.static(path.join(__dirname, './client/build')));
 
+// API routes
+app.use('/', Router);
+
+// Catch-all: serve React index.html for any non-API route (React Router support)
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './client/build/index.html'));
 });

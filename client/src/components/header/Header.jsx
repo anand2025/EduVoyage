@@ -1,8 +1,10 @@
-import { AppBar, Button, Toolbar, styled, InputBase, Box, alpha } from '@mui/material'; 
-import { Search as SearchIcon, Home as HomeIcon, Person as PersonIcon, BarChart as ChartIcon } from '@mui/icons-material';
+import { AppBar, Button, Toolbar, styled, InputBase, Box, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Typography, List, ListItem, ListItemIcon, ListItemText } from '@mui/material'; 
+import { Search as SearchIcon, Home as HomeIcon, Person as PersonIcon, BarChart as ChartIcon, Star as PremiumIcon } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { DataContext } from '../../context/DataProvider';
+import { API } from '../../service/api';
+import { setAccessToken, setRefreshToken } from '../../utils/common-utils';
 
 const Component = styled(AppBar)`
     background: #FFFFFF;
@@ -28,6 +30,33 @@ const Container = styled(Toolbar)(({ theme }) => ({
         }
     }
 }));
+
+const PremiumButton = styled(Button)(({ theme }) => ({
+    textTransform: 'none',
+    background: 'linear-gradient(45deg, #FFD700 30%, #FF8C00 90%)',
+    color: '#000',
+    height: '40px',
+    borderRadius: '8px',
+    marginLeft: '10px',
+    fontWeight: 'bold',
+    '&:hover': {
+        background: 'linear-gradient(45deg, #FF8C00 30%, #FFD700 90%)',
+    },
+    [theme.breakpoints.down('sm')]: {
+        fontSize: '0.8rem',
+        padding: '5px 10px',
+        marginLeft: '5px'
+    }
+}));
+
+const PremiumBadge = styled(Box)({
+    display: 'flex',
+    alignItems: 'center',
+    color: '#E8A317',
+    marginLeft: '10px',
+    fontWeight: 'bold',
+    fontSize: '1.1rem'
+});
 
 const LogoutButton = styled(Button)(({ theme }) => ({
     textTransform: 'none',
@@ -109,9 +138,21 @@ const MobileIcons = styled(Box)(({ theme }) => ({
 
 
 const Header = ({ isUserAuthenticated }) => {       
-    const { account } = useContext(DataContext);
+    const { account, setAccount } = useContext(DataContext);
     const [searchText, setSearchText] = useState('');
+    const [confirmOpen, setConfirmOpen] = useState(false);
     const navigate = useNavigate();
+
+    const handleSubscribe = async () => {
+        setConfirmOpen(false); // Close dialog immediately first
+        let response = await API.subscribeUser();
+        if (response.isSuccess) {
+            sessionStorage.setItem('isPremium', 'true');
+            setAccessToken(response.data.accessToken);
+            setRefreshToken(response.data.refreshToken);
+            setAccount(prev => ({ ...prev, isPremium: true }));
+        }
+    }
 
     const logout = async () => {
         sessionStorage.clear();
@@ -128,6 +169,7 @@ const Header = ({ isUserAuthenticated }) => {
     }
 
     return (
+        <>
         <Component>
             <Container>
                 {/* Logo / Home */}
@@ -153,12 +195,65 @@ const Header = ({ isUserAuthenticated }) => {
                     <Link to={`/profile/${account.username}`}>
                         <PersonIcon style={{ color: '#03112B', fontSize: 30 }} />
                     </Link>
+                    { account.isPremium ? (
+                        <PremiumBadge>
+                            <PremiumIcon /> Premium
+                        </PremiumBadge>
+                    ) : (
+                        <PremiumButton variant="contained" onClick={() => setConfirmOpen(true)}>
+                            Go Premium
+                        </PremiumButton>
+                    )}
                     <LogoutButton variant="contained" onClick={() => logout()}>
                         LOGOUT
                     </LogoutButton>
                 </MobileIcons>
             </Container>
         </Component>
+
+        {/* Premium Confirmation Dialog */}
+        <Dialog 
+            open={confirmOpen} 
+            onClose={() => setConfirmOpen(false)} 
+            maxWidth="xs" 
+            fullWidth
+            keepMounted={false}
+            disableScrollLock
+            PaperProps={{ style: { borderRadius: 16, padding: '8px' } }}>
+            <DialogTitle style={{ textAlign: 'center', fontWeight: 700, fontSize: '1.4rem' }}>
+                <PremiumIcon style={{ color: '#E8A317', verticalAlign: 'middle', marginRight: 8, fontSize: 28 }} />
+                Go Premium
+            </DialogTitle>
+            <DialogContent>
+                <Typography style={{ color: '#555', marginBottom: 12, textAlign: 'center' }}>
+                    Unlock exclusive premium content and features:
+                </Typography>
+                <List dense>
+                    <ListItem>
+                        <ListItemIcon><PremiumIcon style={{ color: '#E8A317' }} /></ListItemIcon>
+                        <ListItemText primary="Access all premium-only posts" />
+                    </ListItem>
+                    <ListItem>
+                        <ListItemIcon><PremiumIcon style={{ color: '#E8A317' }} /></ListItemIcon>
+                        <ListItemText primary="Publish exclusive premium content" />
+                    </ListItem>
+                    <ListItem>
+                        <ListItemIcon><PremiumIcon style={{ color: '#E8A317' }} /></ListItemIcon>
+                        <ListItemText primary="Premium badge on your profile" />
+                    </ListItem>
+                </List>
+            </DialogContent>
+            <DialogActions style={{ justifyContent: 'center', gap: 12, paddingBottom: 20 }}>
+                <Button onClick={() => setConfirmOpen(false)} variant="outlined"
+                    style={{ borderRadius: 8, textTransform: 'none', minWidth: 100 }}>
+                    Cancel
+                </Button>
+                <PremiumButton onClick={handleSubscribe} style={{ minWidth: 140 }}>
+                    Confirm Upgrade
+                </PremiumButton>
+            </DialogActions>
+        </Dialog>
+    </>
     )
 }
 

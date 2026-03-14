@@ -36,6 +36,10 @@ const PostSchema = mongoose.Schema({
     tags: {
         type: Array,
         default: []
+    },
+    isPremium: {
+        type: Boolean,
+        default: false
     }
 });
 

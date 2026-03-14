@@ -3,7 +3,8 @@ export const DataContext = createContext(null);//used to create a new context ob
 const DataProvider = ({ children }) => {
     const [ account, setAccount ] = useState({ 
         name: sessionStorage.getItem('name') || '', 
-        username: sessionStorage.getItem('username') || '' 
+        username: sessionStorage.getItem('username') || '',
+        isPremium: sessionStorage.getItem('isPremium') === 'true'
     });
     return (
         <DataContext.Provider value={{ 

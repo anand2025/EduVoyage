@@ -290,8 +290,9 @@ const Login = ({ isUserAuthenticated }) => {
             setRefreshToken(response.data.refreshToken);
             sessionStorage.setItem('name', response.data.name);
             sessionStorage.setItem('username', response.data.username);
+            sessionStorage.setItem('isPremium', response.data.isPremium);
             
-            setAccount({ name: response.data.name, username: response.data.username });
+            setAccount({ name: response.data.name, username: response.data.username, isPremium: response.data.isPremium });
             
             isUserAuthenticated(true)
             setLogin(loginInitialValues);

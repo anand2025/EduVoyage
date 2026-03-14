@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Box, Typography, styled, Snackbar, Alert, Chip, Menu, MenuItem, ListItemIcon, ListItemText, Tooltip, Zoom, CircularProgress } from '@mui/material';
-import { Delete, Edit, ThumbUp, ThumbDown, ThumbUpAltOutlined, ThumbDownAltOutlined, Bookmark, BookmarkBorder, VolumeUp, Stop, IosShare, Link as LinkIcon, LinkedIn, Twitter } from '@mui/icons-material';
+import { Delete, Edit, ThumbUp, ThumbDown, ThumbUpAltOutlined, ThumbDownAltOutlined, Bookmark, BookmarkBorder, VolumeUp, Stop, IosShare, Link as LinkIcon, LinkedIn, Twitter, Star as PremiumIcon } from '@mui/icons-material';
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { API } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
@@ -349,7 +349,15 @@ const DetailView = () => {
                 </Box>
             </Author>
 
-            <Typography style={{ marginBottom: 20 }}>{post.description}</Typography>
+            {post.description === 'PREMIUM_CONTENT_LOCKED' ? (
+                <Box style={{ textAlign: 'center', padding: '50px 20px', background: '#f9f9f9', borderRadius: 10, marginBottom: 20 }}>
+                    <PremiumIcon style={{ fontSize: 60, color: '#E8A317' }} />
+                    <Typography variant="h5" style={{ fontWeight: 600, margin: '10px 0' }}>Premium Content</Typography>
+                    <Typography style={{ color: '#666', marginBottom: 20 }}>This post is for premium members only. Subscribe to unlock full access!</Typography>
+                </Box>
+            ) : (
+                <Typography style={{ marginBottom: 20 }}>{post.description}</Typography>
+            )}
             
             {post.tags && post.tags.length > 0 && (
                 <Box style={{ marginBottom: 20 }}>

@@ -1,4 +1,5 @@
 import { styled, Box, Typography } from '@mui/material';
+import { Star as PremiumIcon } from '@mui/icons-material';
 
 const Container = styled(Box)`
     border: 1px solid #d3cede;
@@ -48,7 +49,10 @@ const Post = ({ post }) => {
     return (
         <Container>
             <Image src={url} alt="post" />
-            <Text>{post.categories}</Text>
+            <Box style={{ display: 'flex', width: '100%', padding: '0 5px', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text>{post.categories}</Text>
+                {post.isPremium && <PremiumIcon style={{ color: '#E8A317', fontSize: 18 }} titleAccess="Premium Post" />}
+            </Box>
             <Heading>{addEllipsis(post.title, 20)}</Heading>
             <Text>Author: {post.username}</Text>
             {post.tags && post.tags.length > 0 && (

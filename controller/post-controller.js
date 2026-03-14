@@ -68,6 +68,10 @@ export const getPost = async (request, response) => {
             return response.status(404).json({ msg: 'Post not found' });
         }
 
+        if (post.isPremium && !request.user.isPremium && post.username !== request.user.username) {
+            return response.status(200).json({ ...post._doc, description: 'PREMIUM_CONTENT_LOCKED' });
+        }
+
         response.status(200).json(post);
     } catch (error) {
         response.status(500).json({ msg: error.message });
