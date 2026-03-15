@@ -18,6 +18,7 @@ import Login from './components/account/Login';
 import Profile from './components/profile/Profile';
 import LandingPage from './components/landing/LandingPage';
 import Stats from './components/stats/Stats';
+import Onboarding from './components/onboarding/Onboarding';
 
 const PrivateRoute = ({ isAuthenticated, isUserAuthenticated }) => {
   const token = sessionStorage.getItem('accessToken');
@@ -67,6 +68,10 @@ function App() {
 
             <Route path='/stats/:username' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
               <Route index element={<Stats />} />
+            </Route>
+
+            <Route path='/onboarding' element={<PrivateRoute isAuthenticated={isAuthenticated} isUserAuthenticated={isUserAuthenticated} />} >
+              <Route index element={<Onboarding />} />
             </Route>
           </Routes>
         </Box>

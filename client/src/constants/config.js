@@ -23,8 +23,6 @@ export const API_NOTIFICATION_MESSAGES = {
 }
 
 // API SERVICE URL
-// SAMPLE REQUEST
-// NEED SERVICE CALL: { url: '/', method: "POST/GET/PUT/DELETE" }
 //DELETE is used to delete the specified resource.
 //PUT is used to send data to a server to replace/update a resource.
 //POST is used to send data to a server to create a resource.
@@ -49,5 +47,6 @@ export const SERVICE_URLS = {
     getUserByUsername: { url: '/user', method: 'GET', query: true },
     updateUser: { url: '/user/update', method: 'PUT' },
     getAuthorStats: { url: '/stats', method: 'GET', query: true },
-    subscribeUser: { url: '/subscribe', method: 'PUT' }
+    subscribeUser: { url: '/subscribe', method: 'PUT' },
+    saveOnboarding: { url: '/onboarding', method: 'POST' }
 }

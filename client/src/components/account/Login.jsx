@@ -291,13 +291,20 @@ const Login = ({ isUserAuthenticated }) => {
             sessionStorage.setItem('name', response.data.name);
             sessionStorage.setItem('username', response.data.username);
             sessionStorage.setItem('isPremium', response.data.isPremium);
+            sessionStorage.setItem('onboardingCompleted', response.data.onboardingCompleted ? 'true' : 'false');
             
             setAccount({ name: response.data.name, username: response.data.username, isPremium: response.data.isPremium });
             
-            isUserAuthenticated(true)
+            isUserAuthenticated(true);
             setLogin(loginInitialValues);
-            const redirectPath = location.state?.from?.pathname || '/';
-            navigate(redirectPath);
+
+            // Redirect new users to onboarding, returning users to their intended page
+            if (!response.data.onboardingCompleted) {
+                navigate('/onboarding');
+            } else {
+                const redirectPath = location.state?.from?.pathname || '/home';
+                navigate(redirectPath);
+            }
         } else {
             showMessage(response.msg || 'Invalid username or password');
         }

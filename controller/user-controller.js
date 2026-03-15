@@ -70,7 +70,7 @@ export const loginUser = async (request, response) => {
             const newToken = new Token({ token: refreshToken });
             await newToken.save();
         
-            return response.status(200).json({ accessToken: accessToken, refreshToken: refreshToken, name: user.name, username: user.username, isPremium: user.isPremium });
+            return response.status(200).json({ accessToken: accessToken, refreshToken: refreshToken, name: user.name, username: user.username, isPremium: user.isPremium, onboardingCompleted: user.onboardingCompleted });
         
         } else {
             return response.status(400).json({ msg: 'Password does not match' })
@@ -220,6 +220,27 @@ export const getAuthorStats = async (request, response) => {
         });
     } catch (error) {
         return response.status(500).json({ msg: 'Error while fetching author stats', error: error.message });
+    }
+}
+
+export const saveOnboarding = async (request, response) => {
+    try {
+        const username = request.user.username;
+        const { interests, readingGoal } = request.body;
+
+        const updatedUser = await User.findOneAndUpdate(
+            { username },
+            { $set: { interests: interests || [], readingGoal: readingGoal || '', onboardingCompleted: true } },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return response.status(404).json({ msg: 'User not found' });
+        }
+
+        return response.status(200).json({ msg: 'Onboarding saved successfully' });
+    } catch (error) {
+        return response.status(500).json({ msg: 'Error while saving onboarding data', error: error.message });
     }
 }
 
