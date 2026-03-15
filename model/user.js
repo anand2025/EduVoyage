@@ -33,6 +33,18 @@ const userSchema = mongoose.Schema({
     isPremium: {
         type: Boolean,
         default: false
+    },
+    onboardingCompleted: {
+        type: Boolean,
+        default: false
+    },
+    interests: {
+        type: [String],
+        default: []
+    },
+    readingGoal: {
+        type: String,
+        default: ''
     }
 });
 

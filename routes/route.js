@@ -3,7 +3,7 @@ import express from 'express';
 import { createPost, updatePost, deletePost, getPost, getAllPosts, likePost, dislikePost } from '../controller/post-controller.js';
 import { uploadImage, getImage } from '../controller/image-controller.js';
 import { newComment, getComments, deleteComment } from '../controller/comment-controller.js';
-import { loginUser, signupUser, logoutUser, toggleSavePost, getSavedPosts, getUserDetails, updateUserProfile, getAuthorStats, subscribeUser } from '../controller/user-controller.js';
+import { loginUser, signupUser, logoutUser, toggleSavePost, getSavedPosts, getUserDetails, updateUserProfile, getAuthorStats, subscribeUser, saveOnboarding } from '../controller/user-controller.js';
 import { authenticateToken, createNewToken } from '../controller/jwt-controller.js';
 
 
@@ -385,6 +385,8 @@ router.put('/user/update', authenticateToken, updateUserProfile);
  *         description: Subscribed successfully
  */
 router.put('/subscribe', authenticateToken, subscribeUser);
+
+router.post('/onboarding', authenticateToken, saveOnboarding);
 
 /**
  * @swagger

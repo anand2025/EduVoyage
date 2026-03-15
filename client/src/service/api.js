@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
     },
     async function(error) {
         // Stop global loader here
-        return Promise.reject(await ProcessError(error));
+        return await ProcessError(error);
     }
 )
 // If success -> returns { isSuccess: true, data: object }
@@ -55,7 +55,6 @@ const processResponse = (response) => {
 
 // If success -> returns { isSuccess: true, data: object }
 // If fail -> returns { isError: true, status: string, msg: string, code: int }
-/////////////////////////////
 const ProcessError = async (error) => {
     if (error.response) {
         if (error.response?.status === 401) {
