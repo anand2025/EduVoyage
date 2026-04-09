@@ -190,6 +190,65 @@ const SecondaryButton = styled(Button)`
     }
 `;
 
+const GuestButton = styled(Button)`
+    text-transform: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    height: 50px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+        transition: left 0.4s ease;
+    }
+    
+    &:hover::before {
+        left: 100%;
+    }
+    
+    &:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.45);
+        color: #fff;
+    }
+`;
+
+const GuestBadge = styled(Box)`
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%);
+    border: 1px solid #667eea55;
+    border-radius: 20px;
+    padding: 4px 12px;
+    margin-bottom: 10px;
+    
+    & .dot {
+        width: 8px;
+        height: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.2); }
+    }
+`;
+
 const Divider = styled(Box)`
     display: flex;
     align-items: center;
@@ -310,6 +369,25 @@ const Login = ({ isUserAuthenticated }) => {
         }
     }
 
+    const loginAsGuest = async () => {
+        const guestCredentials = { username: 'guest_user', password: 'Guest@123' };
+        let response = await API.userLogin(guestCredentials);
+        if (response.isSuccess) {
+            showError('');
+            setAccessToken(response.data.accessToken);
+            setRefreshToken(response.data.refreshToken);
+            sessionStorage.setItem('name', response.data.name);
+            sessionStorage.setItem('username', response.data.username);
+            sessionStorage.setItem('isPremium', response.data.isPremium);
+            sessionStorage.setItem('onboardingCompleted', 'true');
+            setAccount({ name: response.data.name, username: response.data.username, isPremium: response.data.isPremium });
+            isUserAuthenticated(true);
+            navigate('/home');
+        } else {
+            showMessage('Guest account is not set up yet. Please contact the developer.');
+        }
+    }
+
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -412,6 +490,27 @@ const Login = ({ isUserAuthenticated }) => {
                                 </PrimaryButton>
                                 
                                 <Divider>
+                                    <DividerText>OR</DividerText>
+                                </Divider>
+
+                                <Box sx={{ textAlign: 'center', mb: 1 }}>
+                                    <GuestBadge>
+                                        <span className="dot"></span>
+                                        <Typography sx={{ fontSize: '0.75rem', color: '#667eea', fontWeight: 600 }}>
+                                            Demo Access Available
+                                        </Typography>
+                                    </GuestBadge>
+                                </Box>
+
+                                <GuestButton
+                                    fullWidth
+                                    onClick={loginAsGuest}
+                                    id="guest-login-btn"
+                                >
+                                    🚀 Continue as Guest
+                                </GuestButton>
+
+                                <Divider sx={{ mt: 2 }}>
                                     <DividerText>OR</DividerText>
                                 </Divider>
                                 
